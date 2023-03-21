@@ -37,7 +37,31 @@ app.use(morgan("tiny"));
 app.get("/ping", function (req, res, next) {
   res.json({ message: "pong" });
 });
+//회원가입한 사람 리스트확인
+app.get("/users", async (req, res) => {
+  await myDataSource.query(
+    `SELECT
+      *
+    FROM users;`,
+    (err, rows) => {
+      res.status(200).json(rows);
+    }
+  );
+});
+//회원가입
+app.post("/users", async (req, res) => {
+  const { name, email, password } = req.body;
 
-app.listen(3000, () => {
-  console.log(`server listening on port 3000`);
+  await myDataSource.query(
+    `INSERT INTO users(
+    name,
+    email,
+    password
+  )VALUES(?, ?, ?);`,
+    [name, email, password]
+  );
+  res.status(201).json({ message: "userCreated" });
+});
+app.listen(PORT, () => {
+  console.log(`server listening on port ${PORT}`);
 });
