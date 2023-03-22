@@ -31,6 +31,22 @@ app.get("/ping", function (req, res, next) {
   res.json({ message: "pong" });
 });
 
+app.post("/join", async (req, res, next) => {
+  const { id, name, email, profile_image, password } = req.body;
+
+  await appDataSource.query(
+    `INSERT INTO users(
+      id,
+      name,
+      email,
+      profile_image,
+      password
+    ) VALUES (?, ?, ?, ?, ?) `,
+    [id, name, email, profile_image, password]
+  );
+  res.status(200).json({ message: "userCreated" });
+});
+
 app.listen(3000, function () {
   console.log("server listening on port 3000");
 });
