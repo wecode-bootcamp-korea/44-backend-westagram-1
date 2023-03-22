@@ -25,15 +25,31 @@ appDataSource
     appDataSource.destroy();
   });
 
-  
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors()); // 모든 통신이 cors 메소드를 통과해야지만 올바르게 동작되어 리스폰스를 쏴줄수 있다.
 app.use(morgan("dev"));
 
 app.get("/ping", function (req, res, next) {
   res.json({ message: "pong" });
+});
+
+app.post("/users/signup", async (req, res, next) => {
+  const { name, email, profileImage, password } = req.body;
+
+  await appDataSource.query(
+    `INSERT INTO users(
+          name, 
+          email,
+          profile_image,
+          password
+      ) VALUES (?, ?, ?, ?);
+      `,
+    [name, email, profileImage, password]
+  );
+
+  res.status(201).json({ message: "userCreated" });
 });
 
 app.listen(3000, function () {
