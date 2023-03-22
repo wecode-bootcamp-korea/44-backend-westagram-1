@@ -50,18 +50,19 @@ app.get("/user_posts", async (req, res) => {
     }
   );
 });
-//한 회원이 올린 게시물 보기
+//한 회원이 올린 게시물 보기 + 특정 게시물보기
 app.get("/posts", async (req, res) => {
-  const { userId } = req.body;
+  const { userId, postsId } = req.body;
   await appDataSource.query(
     `SELECT 
       users.id AS userId,
       users.profileImage AS userProfileImage,
       JSON_ARRAYAGG(JSON_OBJECT("postingId",posts.id,"postingImage",posts.postingImage,"postingContent",posts.content)) AS postings
-      FROM users INNER JOIN posts ON users.id = posts.user_id WHERE users.id = ${userId} GROUP BY users.id
+      FROM users INNER JOIN posts ON users.id = posts.user_id WHERE users.id = ${userId} AND posts.id =${postsId} GROUP BY users.id
       `,
     (err, rows) => {
       res.status(200).json(rows);
+      ㅞ;
     }
   );
 });
@@ -81,7 +82,7 @@ app.post("/users", async (req, res) => {
 });
 //게시물 등록
 app.post("/posts", async (req, res) => {
-  const { title, content, user_id } = req.body;
+  const { title, content, userId } = req.body;
 
   await appDataSource.query(
     `INSERT INTO posts(
@@ -89,9 +90,30 @@ app.post("/posts", async (req, res) => {
     content,
     user_id
   )VALUES(?, ?, ?);`,
-    [title, content, user_id]
+    [title, content, userId]
   );
   res.status(201).json({ message: "postCreated" });
+});
+
+//게시물 수정
+app.patch("/posts", async (req, res) => {
+  const { userId, postsId, content } = req.body;
+  await appDataSource.query(
+    `UPDATE posts
+      SET content = ?
+     WHERE user_id =? AND posts.id =?`,
+    [content, userId, postsId]
+  );
+  res.status(200).json({ message: "ok" });
+});
+//post delete
+app.delete("/posts", async (req, res) => {
+  const { postsId } = req.params;
+  await appDataSource.query(
+    `DELECT FROM posts
+  WHERE posts.id = ${postsId}`
+  );
+  res.status(204);
 });
 
 app.listen(PORT, () => {
