@@ -48,6 +48,36 @@ app.get("/users", async (req, res) => {
     }
   );
 });
+//모든 게시물보기
+app.get("/user_posts", async (req, res) => {
+  await myDataSource.query(
+    `SELECT
+      users.id AS userId,
+      posts.id AS postingId,
+      posts.content AS postingContent
+      FROM users
+      JOIN posts ON users.id = posts.user_id
+      `,
+    (err, rows) => {
+      res.status(200).json(rows);
+    }
+  );
+});
+//한 회원이 올린 게시물 보기
+app.get("/posts", async (req, res) => {
+  const { id } = req.body;
+  await myDataSource.query(
+    `SELECT 
+      users.id AS userId,
+      users.profileImage AS userProfileImage,
+      JSON_ARRAYAGG(JSON_OBJECT("postingId",posts.id,"postingImage",posts.postingImage,"postingContent",posts.content)) AS postings
+      FROM users INNER JOIN posts ON users.id = posts.user_id WHERE users.id = ${id} GROUP BY users.id
+      `,
+    (err, rows) => {
+      res.status(200).json(rows);
+    }
+  );
+});
 //회원가입
 app.post("/users", async (req, res) => {
   const { name, email, password } = req.body;
@@ -63,7 +93,7 @@ app.post("/users", async (req, res) => {
   res.status(201).json({ message: "userCreated" });
 });
 
-//포스팅
+//게시물 등록
 app.post("/posts", async (req, res) => {
   const { title, content, user_id } = req.body;
 
