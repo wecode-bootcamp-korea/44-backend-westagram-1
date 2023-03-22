@@ -35,6 +35,20 @@ app.use(morgan("tiny"));
 app.get("/ping", function (req, res, next) {
   res.json({ message: "pong" });
 });
+//회원가입
+app.post("/users", async (req, res) => {
+  const { name, email, password } = req.body;
+
+  await appDataSource.query(
+    `INSERT INTO users(
+    name,
+    email,
+    password
+  )VALUES(?, ?, ?);`,
+    [name, email, password]
+  );
+  res.status(201).json({ message: "userCreated" });
+});
 
 app.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`);
