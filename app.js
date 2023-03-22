@@ -50,7 +50,7 @@ app.get("/user_posts", async (req, res) => {
     }
   );
 });
-//한 회원이 올린 게시물 보기 + 특정 게시물보기
+//한 회원이 올린 게시물 보기
 app.get("/posts", async (req, res) => {
   const { userId } = req.body;
   await appDataSource.query(
@@ -92,28 +92,6 @@ app.post("/posts", async (req, res) => {
     [title, content, userId]
   );
   res.status(201).json({ message: "postCreated" });
-});
-
-//게시물 수정
-app.patch("/posts", async (req, res) => {
-  const { userId, postsId, content } = req.body;
-  await appDataSource.query(
-    `UPDATE posts
-      SET content = ?
-     WHERE user_id =? AND posts.id =?`,
-    [content, userId, postsId]
-  );
-  res.status(200).json({ message: "ok" });
-});
-//post delete
-app.delete("/posts/:postsId", async (req, res) => {
-  const { postsId } = req.params;
-
-  await appDataSource.query(
-    `DELETE FROM posts
-  WHERE posts.id = ${postsId}`
-  );
-  res.status(204);
 });
 
 app.listen(PORT, () => {
