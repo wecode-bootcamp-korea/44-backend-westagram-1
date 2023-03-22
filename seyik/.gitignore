@@ -2,6 +2,8 @@ app2.js
 playapp.js
 node_modules/ 
 
+db/schema.sql
+
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,linux,node,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,linux,node,visualstudiocode
 
