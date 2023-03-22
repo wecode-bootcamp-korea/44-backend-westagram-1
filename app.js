@@ -107,7 +107,10 @@ app.post("/posts", async (req, res) => {
   );
   res.status(201).json({ message: "postCreated" });
 });
-
+//게시물 수정
+app.patch("/posts", (req, res) => {
+  const { userID, postsID } = req.body;
+});
 app.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`);
 });
