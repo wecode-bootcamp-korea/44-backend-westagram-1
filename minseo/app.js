@@ -35,7 +35,7 @@ app.use(morgan("tiny"));
 app.get("/ping", function (req, res, next) {
   res.json({ message: "pong" });
 });
-//회원가입
+
 app.post("/users", async (req, res) => {
   const { name, email, password } = req.body;
 
