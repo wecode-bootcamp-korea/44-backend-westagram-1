@@ -52,7 +52,8 @@ app.get("/post", async (req, res, next) => {
   await appDataSource.query(
     `SELECT
           FROM 
-          users,
+          users.id as userId,
+          users.profile_image as userProfileImage,
           ARRAY_AGG(
             posts.user_id as postingId,
             posts.image_url as postingImageUrl,
@@ -84,6 +85,7 @@ app.post("/content", async (req, res, next) => {
 
   await appDataSource.query(
     `INSERT INTO posts(
+      name,
       title,
       content,
       user_id
