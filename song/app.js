@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const { DataSource } = require("typeorm");
+const PORT = process.env.PORT;
 
 const appDataSource = new DataSource({
   type: process.env.DB_CONNECTION,
@@ -32,21 +33,20 @@ app.get("/ping", function (req, res, next) {
 });
 
 app.post("/join", async (req, res, next) => {
-  const { id, name, email, profile_image, password } = req.body;
+  const { name, email, profileImage, password } = req.body;
 
   await appDataSource.query(
     `INSERT INTO users(
-      id,
       name,
       email,
       profile_image,
       password
-    ) VALUES (?, ?, ?, ?, ?) `,
-    [id, name, email, profile_image, password]
+    ) VALUES (?, ?, ?, ?) `,
+    [name, email, profileImage, password]
   );
-  res.status(200).json({ message: "userCreated" });
+  res.status(201).json({ message: "userCreated" });
 });
 
-app.listen(3000, function () {
-  console.log("server listening on port 3000");
+app.listen(PORT, function () {
+  console.log(`server listening on port ${PORT}`);
 });
