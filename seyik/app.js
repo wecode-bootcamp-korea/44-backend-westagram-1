@@ -26,16 +26,17 @@ appDataSource
   });
 
 const app = express();
+const PORT = process.env.PORT;
 
 app.use(express.json());
-app.use(cors()); // 모든 통신이 cors 메소드를 통과해야지만 올바르게 동작되어 리스폰스를 쏴줄수 있다.
+app.use(cors());
 app.use(morgan("dev"));
 
-app.get("/ping", function (req, res, next) {
+app.get("/ping", function (req, res) {
   res.json({ message: "pong" });
 });
 
-app.post("/users/signup", async (req, res, next) => {
+app.post("/users/signup", async (req, res) => {
   const { name, email, profileImage, password } = req.body;
 
   await appDataSource.query(
@@ -52,6 +53,22 @@ app.post("/users/signup", async (req, res, next) => {
   res.status(201).json({ message: "userCreated" });
 });
 
-app.listen(3000, function () {
-  console.log("server listening on port 3000");
+app.post("/posts/register", async (req, res) => {
+  const { title, content, userId } = req.body;
+
+  await appDataSource.query(
+    `INSERT INTO posts(
+          title,
+          content,
+          user_id
+      ) VALUES (?, ?, ?);
+      `,
+    [title, content, userId]
+  );
+
+  res.status(201).json({ message: "postCreated" });
+});
+
+app.listen(PORT, function () {
+  console.log(`server listening on port ${PORT}`);
 });
