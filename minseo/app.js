@@ -36,6 +36,53 @@ app.get("/ping", function (req, res, next) {
   res.json({ message: "pong" });
 });
 
+app.post("/posts", async (req, res) => {
+  const { title, content, userId } = req.body;
+
+  await appDataSource.query(
+    `INSERT INTO posts(
+    title,
+    content,
+    user_id
+  )VALUES(?, ?, ?);`,
+    [title, content, userId]
+  );
+  res.status(201).json({ message: "postCreated" });
+});
+
+app.get("/posts", async (req, res) => {
+  await appDataSource.query(
+    `SELECT
+      users.id AS userId,
+      posts.id AS postingId,
+      posts.content AS postingContent
+      FROM users
+      JOIN posts ON users.id = posts.user_id
+      `,
+    (err, rows) => {
+      res.status(200).json(rows);
+    }
+  );
+});
+app.get("/user_posts", async (req, res) => {
+  const { userId } = req.body;
+  await appDataSource.query(
+    `SELECT 
+      users.id AS userId,
+      users.profileImage AS userProfileImage,
+      JSON_ARRAYAGG(JSON_OBJECT(
+        "postingId",posts.id,
+        "postingImage",posts.postingImage,
+        "postingContent",posts.content))
+         AS postings
+      FROM users INNER JOIN posts ON users.id = posts.user_id WHERE users.id = ${userId} GROUP BY users.id
+      `,
+    (err, rows) => {
+      res.status(200).json(rows);
+    }
+  );
+});
+
 app.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`);
 });
