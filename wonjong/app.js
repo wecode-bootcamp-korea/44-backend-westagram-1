@@ -58,8 +58,8 @@ app.post("/post", async (req, res) => {
   res.status(201).json({ message: "postCreated" });
 });
 
-app.get("/post", async (req, res) => {
-  await appDataSource.query(
+app.get("/posts", async (req, res) => {
+  const allPostsViews = await appDataSource.query(
     `SELECT 
     u.id as userID,
     u.profile_image as userProfileImage,
@@ -67,16 +67,14 @@ app.get("/post", async (req, res) => {
     p.title as postingTitle,
     p.content as postingContent 
     FROM users u
-    JOIN posts p ON u.id = p.user_id`,
-    (err, rows) => {
-      res.status(200).json(rows);
-    }
+    JOIN posts p ON u.id = p.user_id`
   );
+  res.status(200).json({ data: allPostsViews });
 });
 
-app.get("/user", async (req, res) => {
+app.get("/user/post", async (req, res) => {
   const { userId } = req.body;
-  await appDataSource.query(
+  const allUsersPostsViews = await appDataSource.query(
     `SELECT
       u.id as userId,
       u.profile_image as userProfileImage,
@@ -91,12 +89,10 @@ app.get("/user", async (req, res) => {
         ) as postings 
         FROM posts p
         JOIN users u ON p.user_id = u.id
-        where p.user_id = ${userId}
-        GROUP BY p.user_id;`,
-    (err, rows) => {
-      res.status(200).json({ data: rows });
-    }
+        WHERE p.user_id = ${userId}
+        GROUP BY p.user_id`
   );
+  res.status(200).json({ data: allUsersPostsViews });
 });
 
 app.listen(PORT, function () {
