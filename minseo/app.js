@@ -58,11 +58,10 @@ app.get("/posts", async (req, res) => {
       posts.content AS postingContent
       FROM users
       JOIN posts ON users.id = posts.user_id
-      `,
-    (err, rows) => {
-      res.status(200).json({ data: users });
-    }
+      `
   );
+
+  res.status(200).json({ data: posts });
 });
 app.get("/user/posts", async (req, res) => {
   const { userId } = req.body;
