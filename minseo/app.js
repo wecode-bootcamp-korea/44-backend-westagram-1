@@ -51,7 +51,7 @@ app.post("/posts", async (req, res) => {
 });
 
 app.get("/posts", async (req, res) => {
-  await appDataSource.query(
+  const posts = await appDataSource.query(
     `SELECT
       users.id AS userId,
       posts.id AS postingId,
@@ -60,13 +60,13 @@ app.get("/posts", async (req, res) => {
       JOIN posts ON users.id = posts.user_id
       `,
     (err, rows) => {
-      res.status(200).json(rows);
+      res.status(200).json({ data: users });
     }
   );
 });
-app.get("/user_posts", async (req, res) => {
+app.get("/user/posts", async (req, res) => {
   const { userId } = req.body;
-  await appDataSource.query(
+  const userPosts = await appDataSource.query(
     `SELECT 
       users.id AS userId,
       users.profileImage AS userProfileImage,
@@ -75,12 +75,11 @@ app.get("/user_posts", async (req, res) => {
         "postingImage",posts.postingImage,
         "postingContent",posts.content))
          AS postings
-      FROM users INNER JOIN posts ON users.id = posts.user_id WHERE users.id = ${userId} GROUP BY users.id
+      FROM users INNER JOIN posts ON users.id = posts.user_id WHERE users.id = ? GROUP BY users.id
       `,
-    (err, rows) => {
-      res.status(200).json(rows);
-    }
+    [userId]
   );
+  res.status(200).json({ data: userPosts });
 });
 
 app.post("/users", async (req, res) => {
