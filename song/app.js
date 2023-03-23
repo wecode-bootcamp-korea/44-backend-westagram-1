@@ -48,10 +48,22 @@ app.get("/list", async (req, res, next) => {
 });
 
 app.get("/post", async (req, res, next) => {
+  let postings = [];
   await appDataSource.query(
     `SELECT
-           posts.user_id as `,
-    (err, rows) => res.status(200).json({ data: { rows } })
+          FROM 
+          users.id as userId,
+          users.profile_image as userProfileImage
+          WHERE postings ALL (
+            SELECT 
+            posts.user_id as postingId,
+            posts.image_url as postingImageUrl,
+            posts.content as postingCengtent
+            FROM posts
+            ON users.id = posts.user_id
+          )
+          `,
+    (err, rows) => res.status(200).json({ data: rows })
   );
 });
 
