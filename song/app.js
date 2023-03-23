@@ -52,16 +52,13 @@ app.get("/post", async (req, res, next) => {
   await appDataSource.query(
     `SELECT
           FROM 
-          users.id as userId,
-          users.profile_image as userProfileImage
-          WHERE postings ALL (
-            SELECT 
+          users,
+          ARRAY_AGG(
             posts.user_id as postingId,
             posts.image_url as postingImageUrl,
-            posts.content as postingCengtent
-            FROM posts
-            ON users.id = posts.user_id
-          )
+            posts.Content as postingContent
+          ) as postings 
+          FROM users
           `,
     (err, rows) => res.status(200).json({ data: rows })
   );
