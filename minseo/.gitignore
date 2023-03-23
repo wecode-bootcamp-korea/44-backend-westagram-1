@@ -6,6 +6,8 @@
 
 # temporary files which can be created if a process still has a handle open of a deleted file
 .fuse_hidden*
+db/schema.sql
+node_modules
 
 # KDE directory preferences
 .directory
