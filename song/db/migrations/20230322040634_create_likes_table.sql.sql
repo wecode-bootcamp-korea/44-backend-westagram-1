@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS likes (
   post_id INT  NOT NULL REFERENCES posts(id) UNIQUE,
   create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT likes_user_id FOREIGN KEY (user_id) REFERENCES users(id),
-  CONSTRAINT likes_post_id FOREIGN KEY (post_id) REFERENCES posts(id)
+  CONSTRAINT likes_post_id FOREIGN KEY (post_id) REFERENCES posts(id),
+  ALTER TABLE likes MODIFY COLUMN CONSTRAINT uq_likes UNIQUE(user_id, post_id);
 );
 
 -- migrate:down
