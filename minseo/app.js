@@ -36,6 +36,37 @@ app.get("/ping", function (req, res, next) {
   res.json({ message: "pong" });
 });
 
+app.patch("/posts", async (req, res) => {
+  const { userId, postsId, content } = req.body;
+  await appDataSource.query(
+    `UPDATE posts
+      SET content = ?
+     WHERE user_id =? AND posts.id =?`,
+    [content, userId, postsId]
+  );
+  res.status(200).json({ message: "ok" });
+});
+
+app.delete("/posts/:postsId", async (req, res) => {
+  const { postsId } = req.params;
+
+  await appDataSource.query(
+    `DELETE FROM posts
+  WHERE posts.id = ${postsId}`
+  );
+  res.status(204);
+});
+app.post("/likes", async (req, res) => {
+  const { userId, postId } = req.body;
+  await appDataSource.query(
+    `INSERT INTO likes(
+			user_id,
+			post_id)VALUES (?, ?);`,
+    [userId, postId]
+  );
+  res.status(201).json({ message: "likeCreated" });
+});
+
 app.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`);
 });
