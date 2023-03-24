@@ -54,14 +54,12 @@ app.get("/allposts", async (req, res) => {
 });
 
 app.get("/userposts", async (req, res) => {
-  await appDataSource.query(
+  const { oneUserId } = req.body;
+  const rows = await appDataSource.query(
     `SELECT 
   users.id as userId,
-  users.profile_image as userProfileImage
-  FROM users
-  JOIN (
-    SELECT
-    posts.user_id
+  users.profile_image as userProfileImage,
+  (SELECT
       JSON_ARRAYAGG(
         JSON_OBJECT(
           "postingId", posts.id,
@@ -69,16 +67,16 @@ app.get("/userposts", async (req, res) => {
           "postingContent", posts.content
         )
       )
-    FROM posts
-  )as postings
-  GROUP BY user_id
-  posts ON posts.user_id = users.id
-  GROUP BY userId
+      )as postings
+    FROM users
+    JOIN posts 
+    ON users.id = posts.user_id
+    WHERE posts.user_id = ?
+    GROUP BY posts.user_id
 `,
-    (err, rows) => {
-      return res.status(200).json({ data: rows });
-    }
+    [oneUserId]
   );
+  res.status(200).json({ data: rows });
 });
 
 app.post("/users/signup", async (req, res) => {
