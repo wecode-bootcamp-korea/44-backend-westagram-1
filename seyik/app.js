@@ -33,11 +33,11 @@ app.use(cors());
 app.use(morgan("dev"));
 
 app.get("/ping", function (req, res) {
-  return res.status(200).json({ message: "pong" });
+  res.status(200).json({ message: "pong" });
 });
 
 app.get("/allposts", async (req, res) => {
-  await appDataSource.query(
+  const rows = await appDataSource.query(
     `SELECT 
   users.id as userId,
   users.profile_image as userProfileImage,
@@ -46,11 +46,10 @@ app.get("/allposts", async (req, res) => {
   posts.content as postingContent
   FROM users
   LEFT JOIN posts ON posts.user_id = users.id
-`,
-    (err, rows) => {
-      return res.status(200).json({ data: rows });
-    }
+`
   );
+
+  res.status(200).json({ data: rows });
 });
 
 app.get("/userposts", async (req, res) => {
