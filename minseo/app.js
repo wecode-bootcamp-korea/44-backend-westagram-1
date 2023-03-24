@@ -17,17 +17,17 @@ app.get("/ping", function (req, res, next) {
   res.json({ message: "pong" });
 });
 
-app.patch("/posts", makeModules.update_post);
+app.patch("/posts", makeModules.updatePost);
 
-app.delete("/posts/:postsId", makeModules.delete_post);
-app.post("/likes", makeModules.like_post);
+app.delete("/posts/:postsId", makeModules.deletePost);
+app.post("/likes", makeModules.likePost);
 
-app.post("/posts", makeModules.create_post);
+app.post("/posts", makeModules.createPost);
 
 app.get("/posts", makeModules.getPost);
 app.get("/user/posts", makeModules.getUserPost);
 
-app.post("/users", makeModules.create_user);
+app.post("/users", makeModules.createUser);
 
 const start = async () => {
   try {

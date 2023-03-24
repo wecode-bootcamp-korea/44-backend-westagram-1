@@ -19,7 +19,7 @@ appDataSource
     appDataSource.destroy();
   });
 
-const update_post = async (req, res) => {
+const updatePost = async (req, res) => {
   const { userId, postsId, content } = req.body;
   await appDataSource.query(
     `UPDATE posts
@@ -30,7 +30,7 @@ const update_post = async (req, res) => {
   res.status(200).json({ message: "ok" });
 };
 
-const delete_post = async (req, res) => {
+const deletePost = async (req, res) => {
   const { postsId } = req.params;
 
   await appDataSource.query(
@@ -40,7 +40,7 @@ const delete_post = async (req, res) => {
   );
   res.status(204);
 };
-const create_post = async (req, res) => {
+const createPost = async (req, res) => {
   const { title, content, userId } = req.body;
 
   await appDataSource.query(
@@ -53,12 +53,12 @@ const create_post = async (req, res) => {
   );
   res.status(201).json({ message: "postCreated" });
 };
-const like_post = async (req, res) => {
+const likePost = async (req, res) => {
   const { userId, postId } = req.body;
   await appDataSource.query(
     `INSERT INTO likes(
-			user_id,
-			post_id)VALUES (?, ?);`,
+		user_id,
+		post_id)VALUES (?, ?);`,
     [userId, postId]
   );
   res.status(201).json({ message: "likeCreated" });
@@ -93,7 +93,7 @@ const getUserPost = async (req, res) => {
   );
   res.status(200).json({ data: userPosts });
 };
-const create_user = async (req, res) => {
+const createUser = async (req, res) => {
   const { name, email, password } = req.body;
   await appDataSource.query(
     `INSERT INTO users(
@@ -107,11 +107,11 @@ const create_user = async (req, res) => {
 };
 
 module.exports = {
-  update_post,
-  delete_post,
-  create_post,
-  like_post,
+  updatePost,
+  deletePost,
+  createPost,
+  likePost,
   getPost,
   getUserPost,
-  create_user,
+  createUser,
 };
