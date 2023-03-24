@@ -89,8 +89,9 @@ app.get("/user/post", async (req, res) => {
         ) as postings 
         FROM posts p
         JOIN users u ON p.user_id = u.id
-        WHERE p.user_id = ${userId}
-        GROUP BY p.user_id`
+        WHERE p.user_id = ?
+        GROUP BY p.user_id`,
+    [userId]
   );
   res.status(200).json({ data: allUsersPostsViews });
 });
