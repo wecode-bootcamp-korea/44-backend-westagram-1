@@ -42,8 +42,10 @@ app.get("/allposts", async (req, res) => {
   users.id as userId,
   users.profile_image as userProfileImage,
   posts.id as postingId,
+  posts.title as postingImageUrl,
   posts.content as postingContent
-  FROM users LEFT JOIN posts ON posts.user_id = users.id
+  FROM users
+  LEFT JOIN posts ON posts.user_id = users.id
 `,
     (err, rows) => {
       return res.status(200).json({ data: rows });
@@ -55,14 +57,26 @@ app.get("/userposts", async (req, res) => {
   await appDataSource.query(
     `SELECT 
   users.id as userId,
-  users.profile_image as userProfileImage,
-  posts as posting,
-  posts.content as postingContent
-  FROM users LEFT JOIN posts ON posts.user_id = users.id
-  WHERE user_id = 1
+  users.profile_image as userProfileImage
+  FROM users
+  JOIN (
+    SELECT
+    posts.user_id
+      JSON_ARRAYAGG(
+        JSON_OBJECT(
+          "postingId", posts.id,
+          "postingImageUrl", posts.title,
+          "postingContent", posts.content
+        )
+      )
+    FROM posts
+  )as postings
+  GROUP BY user_id
+  posts ON posts.user_id = users.id
+  GROUP BY userId
 `,
     (err, rows) => {
-      res.json({ data: rows });
+      return res.status(200).json({ data: rows });
     }
   );
 });
