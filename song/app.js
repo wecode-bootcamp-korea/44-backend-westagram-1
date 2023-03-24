@@ -40,11 +40,9 @@ app.get("/list", async (req, res, next) => {
             posts.user_id as postingId,
             posts.image_url as postingImageUrl,
             posts.content as postingContent
-            FROM users LEFT JOIN posts ON users.id = posts.user_id`,
-    (err, rows) => {
-      res.status(200).json({ data: rows });
-    }
+            FROM users LEFT JOIN posts ON users.id = posts.user_id`
   );
+  res.status(200).json({ data: rows });
 });
 
 app.get("/post", async (req, res, next) => {
@@ -75,7 +73,7 @@ app.post("/join", async (req, res, next) => {
   await appDataSource.query(
     `INSERT INTO users(
       name,
-      email,
+      email,posts
       profile_image,
       password
     ) VALUES (?, ?, ?, ?) `,
