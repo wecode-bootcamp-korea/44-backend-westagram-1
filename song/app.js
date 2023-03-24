@@ -31,7 +31,7 @@ app.use(morgan("dev"));
 app.get("/ping", function (req, res, next) {
   res.json({ message: "pong" });
 });
-
+// 게시물 목록 조회
 app.get("/list", async (req, res, next) => {
   await appDataSource.query(
     `SELECT
@@ -46,10 +46,13 @@ app.get("/list", async (req, res, next) => {
     }
   );
 });
-
+// 특정 유저가 작성한 게시물만 불러오는 api
+// query 파라미터로 오는 데이터는 모두 string es) const {aa} = req.query
 app.get("/post", async (req, res, next) => {
   const { userId } = req.body;
   const rows = await appDataSource.query(
+    // const [rows] 를 한다면 출력값이 배열이 제거된 상태에서 출력된다.
+    //하나를 호출할 경우
     `SELECT
           users.id as userId,
           users.profile_image as userProfileImage,
@@ -65,13 +68,16 @@ app.get("/post", async (req, res, next) => {
           GROUP BY users.id;
           `,
     [userId]
+    // ? 는 mysql2에서 지원 ,? 를 권장한다.
   );
   res.status(200).json({ data: rows });
 });
-
+// 회원가입
 app.post("/join", async (req, res, next) => {
   const { name, email, profileImage, password } = req.body;
-
+  // if ( !name || !email || !password)문을 써서 에러핸들링 가능
+  // return res status(400).json({message: "key_error"})
+  // 정보가 하나라도 없다면 true를 반환해 에러
   await appDataSource.query(
     `INSERT INTO users(
       name,
@@ -83,10 +89,10 @@ app.post("/join", async (req, res, next) => {
   );
   res.status(201).json({ message: "userCreated" });
 });
-
+// 게시물 등록
 app.post("/content", async (req, res, next) => {
   const { title, content, userId } = req.body;
-
+  //회원가입과 마찬가지로 if문을 사용하여 에러 핸들링
   await appDataSource.query(
     `INSERT INTO posts(
       title,
@@ -97,18 +103,20 @@ app.post("/content", async (req, res, next) => {
   );
   res.status(201).json({ message: "postCreated" });
 });
-
+// 좋아요 기능
 app.post("/like", async (req, res, next) => {
-  const { Id, userId, content } = req.body;
-  const like = await appDataSource.query(
+  const { userId, postId } = req.body;
+  await appDataSource.query(
     `
-    INSERT INTO posts(
-
-    )
-  `,
-    []
+    INSERT INTO likes(
+      user_id,
+      post_id
+    ) VALUES (?, ?)
+    `,
+    [userId, postId]
   );
-  res.status(201).json({ data: like });
+
+  res.status(200).json({ message: "likeCreated" });
 });
 
 app.patch("/update", async (req, res, next) => {
