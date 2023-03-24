@@ -127,6 +127,13 @@ app.post("/users", async (req, res) => {
   res.status(201).json({ message: "userCreated" });
 });
 
-app.listen(PORT, () => {
-  console.log(`server listening on port ${PORT}`);
-});
+const start = async () => {
+  try {
+    app.listen(PORT, () => {
+      console.log(`server listening on port ${PORT}`);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+start();
