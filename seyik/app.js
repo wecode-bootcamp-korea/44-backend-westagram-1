@@ -44,8 +44,8 @@ app.get("/allposts", async (req, res) => {
   posts.id as postingId,
   posts.title as postingImageUrl,
   posts.content as postingContent
-  FROM users
-  LEFT JOIN posts ON posts.user_id = users.id
+  FROM posts
+  JOIN users ON posts.user_id = users.id
 `
   );
 
@@ -71,7 +71,7 @@ app.get("/userposts", async (req, res) => {
     JOIN posts 
     ON users.id = posts.user_id
     WHERE posts.user_id = ?
-    GROUP BY posts.user_id
+    
 `,
     [oneUserId]
   );
