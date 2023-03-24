@@ -45,6 +45,57 @@ app.post("/user", async (req, res) => {
   res.status(201).json({ message: "userCreated" });
 });
 
+app.post("/post", async (req, res) => {
+  const { title, content, userID } = req.body;
+  await appDataSource.query(
+    `INSERT INTO posts(
+      title,
+      content,
+      user_id) VALUES (?,?,?)
+      `,
+    [title, content, userID]
+  );
+  res.status(201).json({ message: "postCreated" });
+});
+
+app.get("/posts", async (req, res) => {
+  const allPostsViews = await appDataSource.query(
+    `SELECT 
+    u.id as userID,
+    u.profile_image as userProfileImage,
+    p.id as postingId,
+    p.title as postingTitle,
+    p.content as postingContent 
+    FROM users u
+    JOIN posts p ON u.id = p.user_id`
+  );
+  res.status(200).json({ data: allPostsViews });
+});
+
+app.get("/user/post", async (req, res) => {
+  const { userId } = req.body;
+  const allUsersPostsViews = await appDataSource.query(
+    `SELECT
+      u.id as userId,
+      u.profile_image as userProfileImage,
+      (SELECT
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            "postingID", p.id,
+            "postingTitle", p.title,
+            "postingContent", p.content
+          )
+        ) 
+        ) as postings 
+        FROM posts p
+        JOIN users u ON p.user_id = u.id
+        WHERE p.user_id = ?
+        GROUP BY p.user_id`,
+    [userId]
+  );
+  res.status(200).json({ data: allUsersPostsViews });
+});
+
 app.listen(PORT, function () {
   console.log(`server listening on port ${PORT}`);
 });
