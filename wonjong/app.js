@@ -58,7 +58,7 @@ app.post("/post", async (req, res) => {
   res.status(201).json({ message: "postCreated" });
 });
 
-app.get("/post", async (req, res) => {
+app.get("/posts", async (req, res) => {
   await appDataSource.query(
     `SELECT 
     u.id as userID,
@@ -74,9 +74,9 @@ app.get("/post", async (req, res) => {
   );
 });
 
-app.get("/user", async (req, res) => {
+app.get("/user/post", async (req, res) => {
   const { userId } = req.body;
-  await appDataSource.query(
+  const allUsersPostsViews = await appDataSource.query(
     `SELECT
       u.id as userId,
       u.profile_image as userProfileImage,
@@ -91,12 +91,44 @@ app.get("/user", async (req, res) => {
         ) as postings 
         FROM posts p
         JOIN users u ON p.user_id = u.id
-        where p.user_id = ${userId}
-        GROUP BY p.user_id;`,
-    (err, rows) => {
-      res.status(200).json({ data: rows });
-    }
+        WHERE p.user_id = ?
+        GROUP BY p.user_id`,
+    [userId]
   );
+  res.status(200).json({ data: allUsersPostsViews });
+});
+
+app.patch("/post/patch", async (req, res) => {
+  const { postId, title, content } = req.body;
+  await appDataSource.query(
+    `UPDATE posts
+    SET title = ?,
+    content = ?
+    WHERE  posts.id = ?`,
+    [title, content, postId]
+  );
+  res.status(201).json({ message: "postPatch" });
+});
+
+app.delete("/post/delete", async (req, res) => {
+  const { postId } = req.body;
+  await appDataSource.query(
+    `DELETE FROM posts 
+    WHERE  posts.id = ${postId}`
+  );
+  res.status(200).json({ message: "postingDeleted" });
+});
+
+app.post("/like", async (req, res) => {
+  const { userId, postId } = req.body;
+  await appDataSource.query(
+    `INSERT INTO likes(
+      user_id,
+      post_id)  
+      VALUES (?,?)`,
+    [userId, postId]
+  );
+  res.status(201).json({ message: "likeCreated" });
 });
 
 app.listen(PORT, function () {
