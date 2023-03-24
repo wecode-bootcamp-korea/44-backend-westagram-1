@@ -69,7 +69,6 @@ app.get("/userposts", async (req, res) => {
 
 app.post("/users/signup", async (req, res) => {
   const { name, email, profileImage, password } = req.body;
-
   await appDataSource.query(
     `INSERT INTO users(
           name, 
@@ -98,6 +97,22 @@ app.post("/posts/register", async (req, res) => {
   );
 
   res.status(201).json({ message: "postCreated" });
+});
+
+app.get("/modify", async (req, res) => {
+  await appDataSource.query(
+    `UPDATE 
+    users.id as userId,
+    users.profile_image as userProfileImage,
+    posts.id as postingId,
+    posts.content as postingContent
+    FROM users LEFT JOIN posts ON posts.user_id = users.id
+`,
+
+    (err, rows) => {
+      return res.status(200).json({ data: rows });
+    }
+  );
 });
 
 app.listen(PORT, function () {
