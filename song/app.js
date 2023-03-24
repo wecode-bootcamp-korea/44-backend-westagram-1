@@ -98,6 +98,39 @@ app.post("/content", async (req, res, next) => {
   res.status(201).json({ message: "postCreated" });
 });
 
+app.patch("/update", async (req, res, next) => {
+  const { content, userId } = req.body;
+  await appDataSource.query(
+    `UPDATE posts
+          SET 
+          content = ?
+          WHERE posts.user_id = ?
+          `,
+    [content, userId]
+  );
+  const update = await appDataSource.query(
+    `SELECT
+           users.id as userId,
+           users.name as userName,
+           posts.user_id as postingId,
+           posts.title as postingTitle,
+           posts.content as postingContent
+           FROM users LEFT JOIN posts ON users.id = posts.user_id     
+    `
+  );
+
+  res.status(201).json({ data: update });
+});
+
+app.delete("/delete", async (req, res, next) => {
+  const { id } = req.params;
+  await appDataSource.query(
+    `DELETE FROM users
+    WHERE users.id = ${id}`
+  );
+  res.status(200).json({ message: "postingDelete" });
+});
+
 app.listen(PORT, function () {
   console.log(`server listening on port ${PORT}`);
 });
