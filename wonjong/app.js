@@ -67,11 +67,9 @@ app.get('/posts', async (req, res) => {
     p.title as postingTitle,
     p.content as postingContent 
     FROM users u
-    JOIN posts p ON u.id = p.user_id`,
-    (err, rows) => {
-      res.status(200).json(rows);
-    }
+    JOIN posts p ON u.id = p.user_id`
   );
+  res.status(200).json({ data: allPostsViews });
 });
 
 app.get('/user/post', async (req, res) => {
