@@ -33,12 +33,11 @@ app.get("/ping", function (req, res, next) {
 });
 
 app.get("/list", async (req, res, next) => {
-  await appDataSource.query(
+  const rows = await appDataSource.query(
     `SELECT
             users.id as userId,
             users.profile_image as userProfileImage,
             posts.user_id as postingId,
-            posts.image_url as postingImageUrl,
             posts.content as postingContent
             FROM users LEFT JOIN posts ON users.id = posts.user_id`
   );
