@@ -98,6 +98,19 @@ app.post("/content", async (req, res, next) => {
   res.status(201).json({ message: "postCreated" });
 });
 
+app.post("/like", async (req, res, next) => {
+  const { Id, userId, content } = req.body;
+  const like = await appDataSource.query(
+    `
+    INSERT INTO posts(
+
+    )
+  `,
+    []
+  );
+  res.status(201).json({ data: like });
+});
+
 app.patch("/update", async (req, res, next) => {
   const { content, userId } = req.body;
   await appDataSource.query(
@@ -123,10 +136,10 @@ app.patch("/update", async (req, res, next) => {
 });
 
 app.delete("/delete", async (req, res, next) => {
-  const { id } = req.params;
+  const { userId } = req.body;
   await appDataSource.query(
-    `DELETE FROM users
-    WHERE users.id = ${id}`
+    `DELETE FROM posts
+    WHERE posts.user_id = ${userId}`
   );
   res.status(200).json({ message: "postingDelete" });
 });
