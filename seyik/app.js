@@ -99,20 +99,40 @@ app.post("/posts/register", async (req, res) => {
   res.status(201).json({ message: "postCreated" });
 });
 
-app.get("/modify", async (req, res) => {
-  await appDataSource.query(
-    `UPDATE 
-    users.id as userId,
-    users.profile_image as userProfileImage,
-    posts.id as postingId,
-    posts.content as postingContent
-    FROM users LEFT JOIN posts ON posts.user_id = users.id
-`,
+app.patch("/modify", async (req, res) => {
+  const { postingContent, user_id } = req.body;
 
-    (err, rows) => {
-      return res.status(200).json({ data: rows });
-    }
+  await appDataSource.query(
+    `UPDATE posts
+    SET
+    content = ?
+    WHERE posts.user_id = ? 
+    `,
+    [postingContent, user_id]
   );
+  const rows = await appDataSource.query(
+    `SELECT 
+      users.id as userId,
+      users.name as userName,
+      posts.id as postingId,
+      posts.title as postingTitle,
+      posts.content as postingContent
+      FROM users LEFT JOIN posts
+      ON posts.user_id = users.id
+  `
+  );
+  res.status(200).json({ data: rows });
+});
+
+app.delete("/postsdelete", async (req, res) => {
+  const { postId } = req.body;
+  await appDataSource.query(
+    `DELETE
+    FROM posts
+    WHERE posts.id = ${postId}
+    `
+  );
+  res.status(200).json({ message: "Deleted!" });
 });
 
 app.listen(PORT, function () {
