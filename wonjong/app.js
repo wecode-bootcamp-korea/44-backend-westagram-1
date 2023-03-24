@@ -59,7 +59,7 @@ app.post("/post", async (req, res) => {
 });
 
 app.get("/posts", async (req, res) => {
-  const allPostsViews = await appDataSource.query(
+  await appDataSource.query(
     `SELECT 
     u.id as userID,
     u.profile_image as userProfileImage,
@@ -72,7 +72,7 @@ app.get("/posts", async (req, res) => {
   res.status(200).json({ data: allPostsViews });
 });
 
-app.get("/user/post", async (req, res) => {
+app.get("/user/:userId", async (req, res) => {
   const { userId } = req.body;
   const allUsersPostsViews = await appDataSource.query(
     `SELECT
@@ -96,6 +96,39 @@ app.get("/user/post", async (req, res) => {
   res.status(200).json({ data: allUsersPostsViews });
 });
 
-app.listen(PORT, function () {
+app.patch("/post", async (req, res) => {
+  const { postId, title, content } = req.body;
+  await appDataSource.query(
+    `UPDATE posts
+    SET title = ?,
+    content = ?
+    WHERE  posts.id = ?`,
+    [title, content, postId]
+  );
+  res.status(201).json({ message: "postPatch" });
+});
+
+app.delete("/post/:postId", async (req, res) => {
+  const { postId } = req.body;
+  await appDataSource.query(
+    `DELETE FROM posts 
+    WHERE  posts.id = ${postId}`
+  );
+  res.status(200).json({ message: "postingDeleted" });
+});
+
+app.post("/like", async (req, res) => {
+  const { userId, postId } = req.body;
+  await appDataSource.query(
+    `INSERT INTO likes(
+      user_id,
+      post_id)  
+      VALUES (?,?)`,
+    [userId, postId]
+  );
+  res.status(201).json({ message: "likeCreated" });
+});
+
+app.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`);
 });
