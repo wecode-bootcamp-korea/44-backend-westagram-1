@@ -48,21 +48,25 @@ app.get("/list", async (req, res, next) => {
 });
 
 app.get("/post", async (req, res, next) => {
-  let postings = [];
-  await appDataSource.query(
+  const { userId } = req.body;
+  const rows = await appDataSource.query(
     `SELECT
-          FROM 
           users.id as userId,
           users.profile_image as userProfileImage,
-          ARRAY_AGG(
-            posts.user_id as postingId,
-            posts.image_url as postingImageUrl,
-            posts.Content as postingContent
-          ) as postings 
-          FROM users
+          JSON_ARRAYAGG(
+            JSON_OBJECT(
+              "postingId", posts.user_id,
+              "postingContent", posts.content
+            )
+          ) as postings
+          FROM posts
+          INNER JOIN users
+          ON posts.user_id = users.id WHERE users.id = ?
+          GROUP BY users.id;
           `,
-    (err, rows) => res.status(200).json({ data: rows })
+    [userId]
   );
+  res.status(200).json({ data: rows });
 });
 
 app.post("/join", async (req, res, next) => {
@@ -85,7 +89,6 @@ app.post("/content", async (req, res, next) => {
 
   await appDataSource.query(
     `INSERT INTO posts(
-      name,
       title,
       content,
       user_id
