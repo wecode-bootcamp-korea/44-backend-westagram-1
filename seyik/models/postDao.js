@@ -84,4 +84,5 @@ const userPost = async (
 module.exports = {
   createPost,
   allPost,
+  userPost,
 };

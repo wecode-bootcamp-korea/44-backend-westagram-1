@@ -22,7 +22,7 @@ const register = async (req, res) => {
 
 const postService = require("../services/postService");
 
-const allRegister = async (req, res) => {
+const allPost = async (req, res) => {
   try {
     const {
       userId,
@@ -42,7 +42,45 @@ const allRegister = async (req, res) => {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
 
-    await postService.allregister(
+    await postService.allPost(
+      userId,
+      userProfileImage,
+      postingId,
+      postingImageUrl,
+      postingContent
+    );
+    return res.status(201).json({
+      message: "ALL_post_SUCCESS",
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+};
+
+const postService = require("../services/postService");
+
+const userPost = async (req, res) => {
+  try {
+    const {
+      userId,
+      userProfileImage,
+      postingId,
+      postingImageUrl,
+      postingContent,
+    } = req.body;
+
+    if (
+      !userId ||
+      !userProfileImage ||
+      !postingId ||
+      !postingImageUrl ||
+      !postingContent
+    ) {
+      return res.status(400).json({ message: "KEY_ERROR" });
+    }
+
+    await postService.userPost(
       userId,
       userProfileImage,
       postingId,
@@ -60,5 +98,6 @@ const allRegister = async (req, res) => {
 
 module.exports = {
   register,
-  allRegister,
+  allPost,
+  userPost,
 };
