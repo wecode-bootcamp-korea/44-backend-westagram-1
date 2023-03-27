@@ -111,7 +111,7 @@ app.post("/posts/register", async (req, res) => {
 });
 
 app.patch("/posts", async (req, res) => {
-  const { postingContent, user_id } = req.body;
+  const { postingContent, userId } = req.body;
 
   await appDataSource.query(
     `UPDATE posts
@@ -119,7 +119,7 @@ app.patch("/posts", async (req, res) => {
     content = ?
     WHERE posts.user_id = ? 
     `,
-    [postingContent, user_id]
+    [postingContent, userId]
   );
   const rows = await appDataSource.query(
     `SELECT 
