@@ -138,7 +138,7 @@ app.delete("/posts/:postId", async (req, res) => {
   const { postId } = req.params;
   await appDataSource.query(
     `DELETE FROM posts
-    WHERE posts.user_id = ?`,
+    WHERE posts.id = ?`,
     [postId]
   );
   res.status(204).send();
