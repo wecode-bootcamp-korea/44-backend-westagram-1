@@ -144,7 +144,7 @@ app.delete("/posts/:postId", async (req, res) => {
     `,
     [postId]
   );
-  res.status(200).send();
+  res.status(204).send();
 });
 
 app.post("/like", async (req, res) => {
