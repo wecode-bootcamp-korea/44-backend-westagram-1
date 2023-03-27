@@ -8,27 +8,22 @@ const createPost = async (title, content, userId) => {
       `INSERT INTO posts(
         title, 
         content,
-        userId,
+        user_id
     ) VALUES (?, ?, ?);
     `,
       [title, content, userId]
     );
   } catch (err) {
     const error = new Error("INVALID_DATA_INPUT");
-    error.statusCode = 500;
+    console.log(err);
+    error.statusCode = 400;
     throw error;
   }
 };
 
-const allPost = async (
-  userId,
-  userProfileImage,
-  postingId,
-  postingImageUrl,
-  postingContent
-) => {
+const getAllPost = async () => {
   try {
-    return await appDataSource.query(
+    const getAllPost = await appDataSource.query(
       `SELECT
     users.id as userId,
     users.profile_image as userProfileImage,
@@ -37,25 +32,19 @@ const allPost = async (
     posts.content as postingContent
     FROM posts
     JOIN users ON posts.user_id = users.id
-    `,
-      [userId, userProfileImage, postingId, postingImageUrl, postingContent]
+    `
     );
+    return getAllPost;
   } catch (err) {
     const error = new Error("INVALID_DATA_SELECT");
-    error.statusCode = 500;
+    error.statusCode = 400;
     throw error;
   }
 };
 
-const userPost = async (
-  userId,
-  userProfileImage,
-  postingId,
-  postingImageUrl,
-  postingContent
-) => {
+const getUserPost = async (userId) => {
   try {
-    return await appDataSource.query(
+    const UserPost = await appDataSource.query(
       `SELECT 
   users.id as userId,
   users.profile_image as userProfileImage,
@@ -71,18 +60,19 @@ const userPost = async (
     FROM users
     JOIN posts 
     ON users.id = posts.user_id
-    WHERE posts.user_id = ?
+    WHERE posts.user_id = ?;
     `,
-      [userId, userProfileImage, postingId, postingImageUrl, postingContent]
+      [userId]
     );
+    return UserPost;
   } catch (err) {
-    const error = new Error("INVALID_DATA_SELECT");
-    error.statusCode = 500;
+    const error = new Error("INVALID_DATA_USERPOST");
+    error.statusCode = 400;
     throw error;
   }
 };
 module.exports = {
   createPost,
-  allPost,
-  userPost,
+  getAllPost,
+  getUserPost,
 };

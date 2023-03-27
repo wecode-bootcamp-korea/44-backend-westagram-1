@@ -2,7 +2,7 @@
 
 const postService = require("../services/postService");
 
-const register = async (req, res) => {
+const createPost = async (req, res) => {
   try {
     const { title, content, userId } = req.body;
 
@@ -10,70 +10,46 @@ const register = async (req, res) => {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
 
-    await postService.register(title, content, userId);
+    await postService.createPost(title, content, userId);
     return res.status(201).json({
-      message: "REGISTER_SUCCESS",
+      message: "Createpost_SUCCESS",
     });
   } catch (err) {
     console.log(err);
-    return res.status(err.statusCode || 500).json({ message: err.message });
+    return res.status(err.statusCode || 400).json({ message: err.message });
   }
 };
 
-const postService = require("../services/postService");
-
-const allPost = async (req, res) => {
+const getAllPost = async (req, res) => {
   try {
-    const { posts } = req.params;
-    return res.status(201).json({
-      message: "ALL_post_SUCCESS",
-    });
+    const post = await postService.getAllPost();
+
+    return res.status(200).json({ post });
   } catch (err) {
     console.log(err);
-    return res.status(err.statusCode || 500).json({ message: err.message });
+    return res.status(err.statusCode || 400).json({ message: err.message });
   }
 };
 
-const postService = require("../services/postService");
-
-const userPost = async (req, res) => {
+const getUserPost = async (req, res) => {
   try {
-    const {
-      userId,
-      userProfileImage,
-      postingId,
-      postingImageUrl,
-      postingContent,
-    } = req.body;
+    const { userId } = req.params;
 
-    if (
-      !userId ||
-      !userProfileImage ||
-      !postingId ||
-      !postingImageUrl ||
-      !postingContent
-    ) {
+    if (!userId) {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
 
-    await postService.userPost(
-      userId,
-      userProfileImage,
-      postingId,
-      postingImageUrl,
-      postingContent
-    );
-    return res.status(201).json({
-      message: "ALL_REGISTER_SUCCESS",
-    });
+    const data = await postService.getUserPost(userId);
+
+    return res.status(201).json({ data });
   } catch (err) {
     console.log(err);
-    return res.status(err.statusCode || 500).json({ message: err.message });
+    return res.status(err.statusCode || 400).json({ message: err.message });
   }
 };
 
 module.exports = {
-  register,
-  allPost,
-  userPost,
+  createPost,
+  getAllPost,
+  getUserPost,
 };

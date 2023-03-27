@@ -2,50 +2,26 @@
 
 const postDao = require("../models/postDao");
 
-const creatPosts = async (title, content, userId) => {
+const createPost = async (title, content, userId) => {
   const createPost = await postDao.createPost(title, content, userId);
 
   return createPost;
 };
 
-const allPost = async (
-  userId,
-  userProfileImage,
-  postingId,
-  postingImageUrl,
-  postingContent
-) => {
-  const createPost = await postDao.createPost(
-    userId,
-    userProfileImage,
-    postingId,
-    postingImageUrl,
-    postingContent
-  );
+const getAllPost = async () => {
+  const getAllPost = await postDao.getAllPost();
 
-  return createPost;
+  return getAllPost;
 };
 
-const userPost = async (
-  userId,
-  userProfileImage,
-  postingId,
-  postingImageUrl,
-  postingContent
-) => {
-  const createPost = await postDao.createPost(
-    userId,
-    userProfileImage,
-    postingId,
-    postingImageUrl,
-    postingContent
-  );
+const getUserPost = async (userId) => {
+  const UserPost = await postDao.getUserPost(userId);
 
-  return createPost;
+  return UserPost;
 };
 
 module.exports = {
-  creatPosts,
-  allPost,
-  userPost,
+  createPost,
+  getAllPost,
+  getUserPost,
 };
