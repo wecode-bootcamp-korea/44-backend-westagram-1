@@ -110,7 +110,7 @@ app.post("/posts/register", async (req, res) => {
   res.status(201).json({ message: "postCreated" });
 });
 
-app.patch("/modify", async (req, res) => {
+app.patch("/posts", async (req, res) => {
   const { postingContent, user_id } = req.body;
 
   await appDataSource.query(
@@ -132,18 +132,19 @@ app.patch("/modify", async (req, res) => {
       ON posts.user_id = users.id
   `
   );
-  res.status(200).json({ data: rows });
+  return res.status(201).json({ data: rows });
 });
 
-app.delete("/postsdelete", async (req, res) => {
-  const { postId } = req.body;
+app.delete("/posts/:postId", async (req, res) => {
+  const { postId } = req.params;
   await appDataSource.query(
     `DELETE
     FROM posts
-    WHERE posts.id = ${postId}
-    `
+    WHERE posts.id = ?
+    `,
+    [postId]
   );
-  res.status(200).json({ message: "postingDeleted" });
+  res.status(200).send();
 });
 
 app.post("/like", async (req, res) => {
@@ -158,7 +159,7 @@ app.post("/like", async (req, res) => {
     [userId, postId]
   );
 
-  res.status(200).json({ message: "likeCreated" });
+  res.status(201).json({ message: "likeCreated" });
 });
 
 app.listen(PORT, function () {
