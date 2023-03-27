@@ -9,7 +9,7 @@ const signUp = async (name, email, password, profileImage) => {
     '/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i'
   );
 
-  if (!pwValidation.test(password) || !emailValidation.test(email)) {
+  if (!pwValidation.test(password) || !emailValidation) {
     const err = new Error('PASSWORD_OR_EMAIL_IS_NOT_VALID');
     err.statusCode = 409;
     throw err;
