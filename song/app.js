@@ -6,8 +6,6 @@ const morgan = require("morgan");
 const { DataSource } = require("typeorm");
 const PORT = process.env.PORT;
 
-const routers = require("./routers");
-
 const appDataSource = new DataSource({
   type: process.env.DB_CONNECTION,
   host: process.env.DB_HOST,
@@ -30,7 +28,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
-app.use(routers);
 app.get("/ping", function (req, res, next) {
   res.json({ message: "pong" });
 });
@@ -47,7 +44,7 @@ app.get("/postingList", async (req, res, next) => {
   res.status(200).json({ data: rows });
 });
 
-app.get("/userPost", async (req, res, next) => {
+app.get("/post", async (req, res, next) => {
   const { userId } = req.body;
   const rows = await appDataSource.query(
     `SELECT
@@ -69,7 +66,7 @@ app.get("/userPost", async (req, res, next) => {
   res.status(200).json({ data: rows });
 });
 // 회원가입
-app.post("/signUp", async (req, res, next) => {
+app.post("/join", async (req, res, next) => {
   const { name, email, profileImage, password } = req.body;
 
   await appDataSource.query(
@@ -84,7 +81,7 @@ app.post("/signUp", async (req, res, next) => {
   res.status(201).json({ message: "userCreated" });
 });
 // 게시물 등록
-app.post("/CreatePost", async (req, res, next) => {
+app.post("/content", async (req, res, next) => {
   const { title, content, userId } = req.body;
 
   await appDataSource.query(
@@ -141,7 +138,7 @@ app.delete("/posts/:postId", async (req, res) => {
   const { postId } = req.params;
   await appDataSource.query(
     `DELETE FROM posts
-    WHERE posts.user_id = ?`,
+    WHERE posts.id = ?`,
     [postId]
   );
   res.status(204).send();
