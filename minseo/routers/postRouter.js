@@ -8,6 +8,7 @@ router.get('/posts', postController.getAllPosts);
 router.get('/user/posts/:userId', postController.getPostByUserId);
 router.patch('/:userId/:postId', postController.updatePost);
 router.delete('/:userId/:postId', postController.deletePost);
+
 module.exports = {
   router,
 };
