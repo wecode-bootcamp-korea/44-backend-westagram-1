@@ -15,29 +15,8 @@ appDataSource
     console.log('Data Source has been initialized!');
   })
   .catch((err) => {
-    console.error('Error occurred during Data Source initialization', err);
+    console.log('Error occurred during Data Source initialization', err);
     appDataSource.destroy();
   });
 
-const createUser = async (name, email, password, profileImage) => {
-  try {
-    return await appDataSource.query(
-      `INSERT INTO users(
-                name,
-                email, 
-                password,
-                profile_image
-                ) VALUES (?, ?, ?, ?);
-            `,
-      [name, email, password, profileImage]
-    );
-  } catch (err) {
-    const error = new Error('INVALID_DATA_INPUT');
-    error.statusCode = 500;
-    throw error;
-  }
-};
-
-module.exports = {
-  appDataSource,
-};
+module.exports = appDataSource;

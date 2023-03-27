@@ -14,7 +14,8 @@ const createUser = async (name, email, password, profileImage) => {
     );
   } catch (err) {
     const error = new Error('INVALID_DATA_INPUT');
-    error.statusCode = 500;
+    console.log(err);
+    error.statusCode = 400;
     throw error;
   }
 };
@@ -42,7 +43,7 @@ const userAllPostView = async (userId) => {
     );
   } catch (err) {
     const error = new Error('DO_NOT_GET_DATA');
-    error.statusCode = 500;
+    error.statusCode = 400;
     throw error;
   }
 };

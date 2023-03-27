@@ -11,7 +11,7 @@ const createLike = async (userId, postId) => {
     );
   } catch (err) {
     const error = new Error('INVALID_DATA_INPUT');
-    error.statusCode = 500;
+    error.statusCode = 400;
     throw error;
   }
 };

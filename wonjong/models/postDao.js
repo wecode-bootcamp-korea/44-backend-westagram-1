@@ -12,7 +12,7 @@ const createPost = async (title, content, userId) => {
     );
   } catch (err) {
     const error = new Error('INVALID_DATA_INPUT');
-    error.statusCode = 500;
+    error.statusCode = 400;
     throw error;
   }
 };
@@ -31,7 +31,7 @@ const allPostViews = async () => {
     );
   } catch (err) {
     const error = new Error('DO_NOT_GET_DATA');
-    error.statusCode = 500;
+    error.statusCode = 400;
     throw error;
   }
 };
@@ -47,7 +47,7 @@ const patchPost = async (postId, title, content) => {
     );
   } catch (err) {
     const error = new Error('DO_NOT_UPDATE_DATA');
-    error.statusCode = 500;
+    error.statusCode = 400;
     throw error;
   }
 };
@@ -61,7 +61,7 @@ const deletePost = async (postId) => {
     );
   } catch (err) {
     const error = new Error('DO_NOT_UPDATE_DATA');
-    error.statusCode = 500;
+    error.statusCode = 400;
     throw error;
   }
 };
