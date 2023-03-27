@@ -72,7 +72,7 @@ app.post("/join", async (req, res, next) => {
   await appDataSource.query(
     `INSERT INTO users(
       name,
-      email,posts
+      email,
       profile_image,
       password
     ) VALUES (?, ?, ?, ?) `,
