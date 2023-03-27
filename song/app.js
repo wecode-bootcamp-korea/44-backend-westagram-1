@@ -32,6 +32,40 @@ app.get("/ping", function (req, res, next) {
   res.json({ message: "pong" });
 });
 
+app.get("/list", async (req, res, next) => {
+  const rows = await appDataSource.query(
+    `SELECT
+            users.id as userId,
+            users.profile_image as userProfileImage,
+            posts.user_id as postingId,
+            posts.content as postingContent
+            FROM users LEFT JOIN posts ON users.id = posts.user_id`
+  );
+  res.status(200).json({ data: rows });
+});
+
+app.get("/post", async (req, res, next) => {
+  const { userId } = req.body;
+  const rows = await appDataSource.query(
+    `SELECT
+          users.id as userId,
+          users.profile_image as userProfileImage,
+          JSON_ARRAYAGG(
+            JSON_OBJECT(
+              "postingId", posts.user_id,
+              "postingContent", posts.content
+            )
+          ) as postings
+          FROM posts
+          INNER JOIN users
+          ON posts.user_id = users.id WHERE users.id = ?
+          GROUP BY users.id;
+          `,
+    [userId]
+  );
+  res.status(200).json({ data: rows });
+});
+
 app.post("/join", async (req, res, next) => {
   const { name, email, profileImage, password } = req.body;
 
@@ -45,6 +79,20 @@ app.post("/join", async (req, res, next) => {
     [name, email, profileImage, password]
   );
   res.status(201).json({ message: "userCreated" });
+});
+
+app.post("/content", async (req, res, next) => {
+  const { title, content, userId } = req.body;
+
+  await appDataSource.query(
+    `INSERT INTO posts(
+      title,
+      content,
+      user_id
+    ) VALUES (?, ?, ?)`,
+    [title, content, userId]
+  );
+  res.status(201).json({ message: "postCreated" });
 });
 
 app.listen(PORT, function () {
