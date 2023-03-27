@@ -33,18 +33,15 @@ app.get("/ping", function (req, res, next) {
 });
 // 게시물 목록 조회
 app.get("/list", async (req, res, next) => {
-  await appDataSource.query(
+  const rows = await appDataSource.query(
     `SELECT
             users.id as userId,
             users.profile_image as userProfileImage,
             posts.user_id as postingId,
-            posts.image_url as postingImageUrl,
             posts.content as postingContent
-            FROM posts LEFT JOIN users ON users.id = posts.user_id`,
-    (err, rows) => {
-      res.status(200).json({ data: rows });
-    }
+            FROM posts LEFT JOIN users ON users.id = posts.user_id`
   );
+  res.status(200).json({ data: rows });
 });
 // 특정 유저가 작성한 게시물만 불러오는 api
 // query 파라미터로 오는 데이터는 모두 string es) const {aa} = req.query
