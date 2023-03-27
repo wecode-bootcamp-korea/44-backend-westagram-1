@@ -33,38 +33,49 @@ app.use(cors());
 app.use(morgan("dev"));
 
 app.get("/ping", function (req, res) {
-  return res.status(200).json({ message: "pong" });
+  res.status(200).json({ message: "pong" });
 });
 
 app.get("/allposts", async (req, res) => {
-  await appDataSource.query(
+  const rows = await appDataSource.query(
     `SELECT 
   users.id as userId,
   users.profile_image as userProfileImage,
   posts.id as postingId,
+  posts.title as postingImageUrl,
   posts.content as postingContent
-  FROM users LEFT JOIN posts ON posts.user_id = users.id
-`,
-    (err, rows) => {
-      return res.status(200).json({ data: rows });
-    }
+  FROM posts
+  JOIN users ON posts.user_id = users.id
+`
   );
+
+  res.status(200).json({ data: rows });
 });
 
 app.get("/userposts", async (req, res) => {
-  await appDataSource.query(
+  const { oneUserId } = req.body;
+  const rows = await appDataSource.query(
     `SELECT 
   users.id as userId,
   users.profile_image as userProfileImage,
-  posts as posting,
-  posts.content as postingContent
-  FROM users LEFT JOIN posts ON posts.user_id = users.id
-  WHERE user_id = 1
+  (SELECT
+      JSON_ARRAYAGG(
+        JSON_OBJECT(
+          "postingId", posts.id,
+          "postingImageUrl", posts.title,
+          "postingContent", posts.content
+        )
+      )
+      )as postings
+    FROM users
+    JOIN posts 
+    ON users.id = posts.user_id
+    WHERE posts.user_id = ?
+    
 `,
-    (err, rows) => {
-      res.json({ data: rows });
-    }
+    [oneUserId]
   );
+  res.status(200).json({ data: rows });
 });
 
 app.post("/users/signup", async (req, res) => {
