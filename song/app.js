@@ -26,7 +26,7 @@ appDataSource
 const app = express();
 
 app.use(express.json());
-app.use(cors()); // 모든 통신이 cors 메소드를 통과해야지만 올바르게 동작되어 리스폰스를 쏴줄수 있다.
+app.use(cors());
 app.use(morgan("dev"));
 app.get("/ping", function (req, res, next) {
   res.json({ message: "pong" });
@@ -43,13 +43,10 @@ app.get("/list", async (req, res, next) => {
   );
   res.status(200).json({ data: rows });
 });
-// 특정 유저가 작성한 게시물만 불러오는 api
-// query 파라미터로 오는 데이터는 모두 string es) const {aa} = req.query
+
 app.get("/post", async (req, res, next) => {
   const { userId } = req.body;
   const rows = await appDataSource.query(
-    // const [rows] 를 한다면 출력값이 배열이 제거된 상태에서 출력된다.
-    //하나를 호출할 경우
     `SELECT
           users.id as userId,
           users.profile_image as userProfileImage,
@@ -65,14 +62,13 @@ app.get("/post", async (req, res, next) => {
           GROUP BY users.id;
           `,
     [userId]
-    // ? 는 mysql2에서 지원 ,? 를 권장한다.
   );
   res.status(200).json({ data: rows });
 });
 // 회원가입
 app.post("/join", async (req, res, next) => {
   const { name, email, profileImage, password } = req.body;
-  // 정보가 하나라도 없다면 true를 반환해 에러
+
   await appDataSource.query(
     `INSERT INTO users(
       name,
@@ -87,7 +83,7 @@ app.post("/join", async (req, res, next) => {
 // 게시물 등록
 app.post("/content", async (req, res, next) => {
   const { title, content, userId } = req.body;
-  //회원가입과 마찬가지로 if문을 사용하여 에러 핸들링
+
   await appDataSource.query(
     `INSERT INTO posts(
       title,
@@ -111,10 +107,10 @@ app.post("/like", async (req, res, next) => {
     [userId, postId]
   );
 
-  res.status(200).json({ message: "likeCreated" });
+  res.status(201).json({ message: "likeCreated" });
 });
 
-app.patch("/update", async (req, res, next) => {
+app.patch("/posts", async (req, res) => {
   const { content, userId } = req.body;
   await appDataSource.query(
     `UPDATE posts
@@ -135,16 +131,17 @@ app.patch("/update", async (req, res, next) => {
     `
   );
 
-  res.status(200).json({ data: update });
+  res.status(201).json({ data: update });
 });
 
-app.delete("/delete", async (req, res, next) => {
-  const { userId } = req.body;
+app.delete("/posts/:postId", async (req, res) => {
+  const { postId } = req.params;
   await appDataSource.query(
     `DELETE FROM posts
-    WHERE posts.user_id = ${userId}`
+    WHERE posts.user_id = ?`,
+    [postId]
   );
-  res.status(200).json({ message: "postingDelete" });
+  res.status(204).send();
 });
 
 app.listen(PORT, function () {
