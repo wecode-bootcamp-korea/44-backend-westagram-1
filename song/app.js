@@ -40,7 +40,7 @@ app.get("/list", async (req, res, next) => {
             posts.user_id as postingId,
             posts.image_url as postingImageUrl,
             posts.content as postingContent
-            FROM users LEFT JOIN posts ON users.id = posts.user_id`,
+            FROM posts LEFT JOIN users ON users.id = posts.user_id`,
     (err, rows) => {
       res.status(200).json({ data: rows });
     }
@@ -75,8 +75,6 @@ app.get("/post", async (req, res, next) => {
 // 회원가입
 app.post("/join", async (req, res, next) => {
   const { name, email, profileImage, password } = req.body;
-  // if ( !name || !email || !password)문을 써서 에러핸들링 가능
-  // return res status(400).json({message: "key_error"})
   // 정보가 하나라도 없다면 true를 반환해 에러
   await appDataSource.query(
     `INSERT INTO users(
@@ -140,7 +138,7 @@ app.patch("/update", async (req, res, next) => {
     `
   );
 
-  res.status(201).json({ data: update });
+  res.status(200).json({ data: update });
 });
 
 app.delete("/delete", async (req, res, next) => {
