@@ -1,4 +1,4 @@
-//model/userDao.js
+//model/likeDao.js
 
 const { DaoSource, DataSource } = require("typeorm");
 
@@ -21,17 +21,15 @@ appDataSource
     appDataSource.destroy();
   });
 
-const createUser = async (name, email, password, profileImage) => {
+const createLikes = async (userId, postId) => {
   try {
     return await appDataSource.query(
-      `INSERT INTO users(
-        name, 
-        email,
-        profile_image,
-        password
-    ) VALUES (?, ?, ?, ?);
+      `INSERT INTO likes( 
+        userId,
+        postId
+    ) VALUES (?, ?);
     `,
-      [name, email, profileImage, password]
+      [userId, postId]
     );
   } catch (err) {
     const error = new Error("INVALID_DATA_INPUT");
@@ -41,5 +39,5 @@ const createUser = async (name, email, password, profileImage) => {
 };
 
 module.exports = {
-  createUser,
+  createLikes,
 };
