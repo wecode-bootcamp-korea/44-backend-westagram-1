@@ -17,7 +17,7 @@ const createPost = async (userId, title, content) => {
   }
 };
 
-const getPosts = async () => {
+const getAllPosts = async () => {
   try {
     const posts = await appDataSource.query(
       `SELECT
@@ -36,7 +36,7 @@ const getPosts = async () => {
   }
 };
 
-const userPosts = async (userId) => {
+const getPostByUserId = async (userId) => {
   try {
     const posts = await appDataSource.query(
       `SELECT 
@@ -73,8 +73,10 @@ const updatePost = async (userId, postId, content) => {
     "postingId",posts.id,
     "postingContent",posts.content
     )) AS postings
-    FROM users INNER JOIN posts ON users.id = posts.user_id
-    WHERE users.id = ? AND posts.id= ? GROUP BY users.id;
+    FROM users INNER JOIN posts 
+    ON users.id = posts.user_id
+    WHERE users.id = ? AND posts.id= ?
+    GROUP BY users.id;
     `,
       [userId, postId]
     );
@@ -95,14 +97,14 @@ const deletePost = async (userId, postId) => {
     );
   } catch (err) {
     const error = new Error('INVALID_DATA_DELETEPOST');
-    error.statusCode = 500;
+    error.statusCode = 400;
     throw error;
   }
 };
 module.exports = {
   createPost,
-  getPosts,
-  userPosts,
+  getAllPosts,
+  getPostByUserId,
   updatePost,
   deletePost,
 };
