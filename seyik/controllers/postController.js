@@ -24,31 +24,7 @@ const postService = require("../services/postService");
 
 const allPost = async (req, res) => {
   try {
-    const {
-      userId,
-      userProfileImage,
-      postingId,
-      postingImageUrl,
-      postingContent,
-    } = req.body;
-
-    if (
-      !userId ||
-      !userProfileImage ||
-      !postingId ||
-      !postingImageUrl ||
-      !postingContent
-    ) {
-      return res.status(400).json({ message: "KEY_ERROR" });
-    }
-
-    await postService.allPost(
-      userId,
-      userProfileImage,
-      postingId,
-      postingImageUrl,
-      postingContent
-    );
+    const { posts } = req.params;
     return res.status(201).json({
       message: "ALL_post_SUCCESS",
     });

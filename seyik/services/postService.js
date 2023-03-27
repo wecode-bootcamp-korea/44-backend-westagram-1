@@ -2,7 +2,7 @@
 
 const postDao = require("../models/postDao");
 
-const register = async (title, content, userId) => {
+const creatPosts = async (title, content, userId) => {
   const createPost = await postDao.createPost(title, content, userId);
 
   return createPost;
@@ -45,7 +45,7 @@ const userPost = async (
 };
 
 module.exports = {
-  register,
+  creatPosts,
   allPost,
   userPost,
 };
