@@ -1,4 +1,4 @@
-const appDataSource = require("./appDataSource");
+const appDataSource = require('./appDataSource');
 
 const createUser = async (name, email, password, profileImage) => {
   try {
@@ -12,7 +12,7 @@ const createUser = async (name, email, password, profileImage) => {
       [name, email, password, profileImage]
     );
   } catch (err) {
-    const error = new Error("INVALID_DATA_INPUT");
+    const error = new Error('INVALID_DATA_INPUT');
     error.statusCode = 500;
     throw error;
   }

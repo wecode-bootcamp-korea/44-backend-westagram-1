@@ -1,4 +1,4 @@
-const appDataSource = require("./appDataSource");
+const appDataSource = require('./appDataSource');
 
 const createPost = async (userId, title, content) => {
   try {
@@ -11,7 +11,7 @@ const createPost = async (userId, title, content) => {
       [userId, title, content]
     );
   } catch (err) {
-    const error = new Error("INVALID_DATA_INPUT");
+    const error = new Error('INVALID_DATA_INPUT');
     error.statusCode = 500;
     throw error;
   }
@@ -30,7 +30,7 @@ const getPosts = async () => {
     );
     return posts;
   } catch (err) {
-    const error = new Error("INVALID_DATA_OUTPUT");
+    const error = new Error('INVALID_DATA_OUTPUT');
     error.statusCode = 500;
     throw error;
   }
@@ -51,7 +51,7 @@ const userPosts = async (userId) => {
     );
     return posts;
   } catch (err) {
-    const error = new Error("INVALID_DATA_USERPOSTS");
+    const error = new Error('INVALID_DATA_USERPOSTS');
     error.statusCode = 500;
     throw error;
   }
@@ -80,7 +80,7 @@ const updatePost = async (userId, postId, content) => {
     );
     return post;
   } catch (err) {
-    const error = new Error("INVALID_DATA_UPDATAPOST");
+    const error = new Error('INVALID_DATA_UPDATAPOST');
     error.statusCode = 500;
     throw error;
   }
@@ -94,7 +94,7 @@ const deletePost = async (userId, postId) => {
       [userId, postId]
     );
   } catch (err) {
-    const error = new Error("INVALID_DATA_DELETEPOST");
+    const error = new Error('INVALID_DATA_DELETEPOST');
     error.statusCode = 500;
     throw error;
   }

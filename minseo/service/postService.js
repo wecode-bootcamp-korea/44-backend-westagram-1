@@ -1,4 +1,4 @@
-const postDao = require("../models/postDao");
+const postDao = require('../models/postDao');
 
 const posting = async (userId, title, content) => {
   const createPost = await postDao.createPost(userId, title, content);

@@ -1,4 +1,4 @@
-const { DataSource } = require("typeorm");
+const { DataSource } = require('typeorm');
 
 const appDataSource = new DataSource({
   type: process.env.DB_CONNECTION,
@@ -12,10 +12,10 @@ const appDataSource = new DataSource({
 appDataSource
   .initialize()
   .then(() => {
-    console.log("Data Source has been initialized!");
+    console.log('Data Source has been initialized!');
   })
   .catch((err) => {
-    console.log("Error occurred during Data Source initialization", err);
+    console.log('Error occurred during Data Source initialization', err);
     appDataSource.destroy();
   });
 

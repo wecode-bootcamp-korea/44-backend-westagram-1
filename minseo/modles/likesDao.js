@@ -1,4 +1,4 @@
-const appDataSource = require("./appDataSource");
+const appDataSource = require('./appDataSource');
 
 const createlikes = async (userId, postId) => {
   try {
@@ -11,7 +11,7 @@ const createlikes = async (userId, postId) => {
       [userId, postId]
     );
   } catch (err) {
-    const error = new Error("INVALID_DATA_INPUT_LIKES");
+    const error = new Error('INVALID_DATA_INPUT_LIKES');
     error.statusCode = 500;
     throw error;
   }
