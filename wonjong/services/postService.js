@@ -9,7 +9,7 @@ const createPost = async (title, content, userId) => {
 const allPostViews = async () => {
   return await postDao.allPostViews();
 };
-const patchPost = async (postId, title, content) => {
+const patchPost = async (postId, content) => {
   const createPost = await postDao.patchPost(postId, title, content);
   return createPost;
 };

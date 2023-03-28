@@ -1,4 +1,6 @@
 const userDao = require('../models/userDao');
+const bcrypt = require('bcrypt');
+const saltRounds = 12;
 
 const signUp = async (name, email, password, profileImage) => {
   // password validation using REGEX
@@ -13,8 +15,11 @@ const signUp = async (name, email, password, profileImage) => {
     err.statusCode = 409;
     throw err;
   }
-
-  const createUser = await userDao.createUser(name, email, password, profileImage);
+  const makeHash = async (password, saltRounds) => {
+    return await bcrypt.hash(password, saltRounds);
+  };
+  const hashPassword = await makeHash(password, saltRounds);
+  const createUser = await userDao.createUser(name, email, hashPassword, profileImage);
 
   return createUser;
 };
@@ -28,3 +33,4 @@ module.exports = {
   signUp,
   userAllPostView,
 };
+

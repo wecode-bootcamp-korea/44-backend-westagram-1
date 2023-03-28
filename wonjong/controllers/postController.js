@@ -32,13 +32,13 @@ const allPostViews = async (req, res) => {
 
 const patchPost = async (req, res) => {
   try {
-    const { postId, title, content } = req.body;
+    const { postId, content } = req.body;
 
-    if (!postId || !title || !content) {
+    if (!postId || !content) {
       return res.status(400).json({ message: 'KEY_ERROR' });
     }
 
-    await postService.patchPost(postId, title, content);
+    await postService.patchPost(postId, content);
     return res.status(200).json({
       message: 'PATCH_SUCCESS',
     });
