@@ -56,7 +56,7 @@ app.get("/userposts", async (req, res) => {
   const { oneUserId } = req.body;
   const rows = await appDataSource.query(
     `SELECT 
-  users.id as userId,00
+  users.id as userId,
   users.profile_image as userProfileImage,
   (SELECT
       JSON_ARRAYAGG(
