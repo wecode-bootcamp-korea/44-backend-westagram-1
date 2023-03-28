@@ -80,7 +80,6 @@ app.get("/userposts", async (req, res) => {
 
 app.post("/users/signup", async (req, res) => {
   const { name, email, profileImage, password } = req.body;
-
   await appDataSource.query(
     `INSERT INTO users(
           name, 
@@ -109,6 +108,58 @@ app.post("/posts/register", async (req, res) => {
   );
 
   res.status(201).json({ message: "postCreated" });
+});
+
+app.patch("/posts", async (req, res) => {
+  const { postingContent, userId } = req.body;
+
+  await appDataSource.query(
+    `UPDATE posts
+    SET
+    content = ?
+    WHERE posts.user_id = ? 
+    `,
+    [postingContent, userId]
+  );
+  const rows = await appDataSource.query(
+    `SELECT 
+      users.id as userId,
+      users.name as userName,
+      posts.id as postingId,
+      posts.title as postingTitle,
+      posts.content as postingContent
+      FROM users LEFT JOIN posts
+      ON posts.user_id = users.id
+  `
+  );
+  return res.status(201).json({ data: rows });
+});
+
+app.delete("/posts/:postId", async (req, res) => {
+  const { postId } = req.params;
+  await appDataSource.query(
+    `DELETE
+    FROM posts
+    WHERE posts.id = ?
+    `,
+    [postId]
+  );
+  res.status(204).send();
+});
+
+app.post("/like", async (req, res) => {
+  const { userId, postId } = req.body;
+
+  await appDataSource.query(
+    `INSERT INTO likes(
+          user_id,
+          post_id
+      ) VALUES (?, ?);
+      `,
+    [userId, postId]
+  );
+
+  res.status(201).json({ message: "likeCreated" });
 });
 
 app.listen(PORT, function () {
