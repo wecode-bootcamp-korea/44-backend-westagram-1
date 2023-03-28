@@ -9,9 +9,9 @@ const createPost = async (title, content, userId) => {
 };
 
 const getAllPost = async () => {
-  const getAllPost = await postDao.getAllPost();
+  const AllPost = await postDao.getAllPost();
 
-  return getAllPost;
+  return AllPost;
 };
 
 const getUserPost = async (userId) => {
@@ -20,8 +20,22 @@ const getUserPost = async (userId) => {
   return UserPost;
 };
 
+const updatePost = async (postingContent, id) => {
+  const updatePost = await postDao.updatePost(postingContent, id);
+
+  return updatePost;
+};
+
+const deletePost = async (id) => {
+  const Deletion = await postDao.deletePost(id);
+
+  return Deletion;
+};
+
 module.exports = {
   createPost,
   getAllPost,
   getUserPost,
+  updatePost,
+  deletePost,
 };

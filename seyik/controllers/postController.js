@@ -48,8 +48,43 @@ const getUserPost = async (req, res) => {
   }
 };
 
+const updatePost = async (req, res) => {
+  try {
+    const { postingContent, id } = req.body;
+
+    if (!postingContent || !id) {
+      return res.status(400).json({ message: "KEY_ERROR" });
+    }
+
+    const data = await postService.updatePost(postingContent, id);
+
+    return res.status(201).json({ data });
+  } catch (err) {
+    console.log(err);
+    return res.status(err.statusCode || 400).json({ message: err.message });
+  }
+};
+
+const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "KEY_ERROR" });
+    }
+
+    const data = await postService.deletePost(id);
+
+    return res.status(201).json({ data });
+  } catch (err) {
+    console.log(err);
+    return res.status(err.statusCode || 400).json({ message: err.message });
+  }
+};
 module.exports = {
   createPost,
   getAllPost,
   getUserPost,
+  updatePost,
+  deletePost,
 };

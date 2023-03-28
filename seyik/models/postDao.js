@@ -71,8 +71,48 @@ const getUserPost = async (userId) => {
     throw error;
   }
 };
+
+const updatePost = async (postingContent, id) => {
+  try {
+    const update = await appDataSource.query(
+      `UPDATE posts
+      SET
+      content = ?
+      WHERE posts.id = ? 
+      `,
+      [postingContent, id]
+    );
+    return update;
+  } catch (err) {
+    const error = new Error("INVALID_DATA_UPDATEPOST");
+    console.log(err);
+    error.statusCode = 400;
+    throw error;
+  }
+};
+
+const deletePost = async (id) => {
+  try {
+    const Deletion = await appDataSource.query(
+      `DELETE
+    FROM posts
+    WHERE posts.id = ?
+    `,
+      [id]
+    );
+    return Deletion;
+  } catch (err) {
+    const error = new Error("INVALID_DATA_DELETE");
+    console.log(err);
+    error.statusCode = 400;
+    throw error;
+  }
+};
+
 module.exports = {
   createPost,
   getAllPost,
   getUserPost,
+  updatePost,
+  deletePost,
 };

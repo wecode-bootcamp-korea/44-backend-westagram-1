@@ -2,23 +2,23 @@
 
 const appDataSource = require("./appDataSource");
 
-const createLikes = async (userId, postId) => {
+const like = async (userId, postId) => {
   try {
     return await appDataSource.query(
       `INSERT INTO likes( 
-        userId,
-        postId
+        user_id,
+        post_id
     ) VALUES (?, ?);
     `,
       [userId, postId]
     );
   } catch (err) {
     const error = new Error("INVALID_DATA_INPUT");
-    error.statusCode = 500;
+    error.statusCode = 400;
     throw error;
   }
 };
 
 module.exports = {
-  createLikes,
+  like,
 };
