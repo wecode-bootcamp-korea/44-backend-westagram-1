@@ -11,7 +11,7 @@ const signUp = async (name, email, password, profileImage) => {
 
   if (!pwValidation.test(password) || !emailValidation.test(email)) {
     const err = new Error('PASSWORD_OR_EMAIL_IS_NOT_VALID');
-    err.statusCode = 409;
+    err.statusCode = 400;
     throw err;
   }
 

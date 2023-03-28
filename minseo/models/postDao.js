@@ -12,7 +12,7 @@ const createPost = async (userId, title, content) => {
     );
   } catch (err) {
     const error = new Error('INVALID_DATA_INPUT');
-    error.statusCode = 500;
+    error.statusCode = 400;
     throw error;
   }
 };
@@ -31,7 +31,7 @@ const getAllPosts = async () => {
     return posts;
   } catch (err) {
     const error = new Error('INVALID_DATA_OUTPUT');
-    error.statusCode = 500;
+    error.statusCode = 400;
     throw error;
   }
 };
@@ -42,9 +42,12 @@ const getPostByUserId = async (userId) => {
       `SELECT 
     users.id AS userId,
     users.profile_image AS userProfileImage,
-    JSON_ARRAYAGG(JSON_OBJECT("postingId",posts.id,
-    "postingContent",posts.content)) AS postings
-    FROM users INNER JOIN posts ON users.id = posts.user_id 
+    JSON_ARRAYAGG(JSON_OBJECT(
+    "postingId",posts.id,
+    "postingContent",posts.content
+    )) AS postings
+    FROM users INNER JOIN posts 
+    ON users.id = posts.user_id 
     WHERE users.id = ? GROUP BY users.id;
     `,
       [userId]
@@ -52,7 +55,7 @@ const getPostByUserId = async (userId) => {
     return posts;
   } catch (err) {
     const error = new Error('INVALID_DATA_USERPOSTS');
-    error.statusCode = 500;
+    error.statusCode = 400;
     throw error;
   }
 };
@@ -65,6 +68,7 @@ const updatePost = async (userId, postId, content) => {
      WHERE user_id =? AND posts.id =?;`,
       [content, userId, postId]
     );
+
     const post = await appDataSource.query(
       `SELECT 
     users.id AS userId,
@@ -83,7 +87,7 @@ const updatePost = async (userId, postId, content) => {
     return post;
   } catch (err) {
     const error = new Error('INVALID_DATA_UPDATAPOST');
-    error.statusCode = 500;
+    error.statusCode = 400;
     throw error;
   }
 };

@@ -12,7 +12,7 @@ const createPost = async (req, res) => {
 
     return res.status(201).json({ message: 'createPost_SUCCESS' });
   } catch (err) {
-    return res.status(err.statusCode || 500).json({ message: err.message });
+    return res.status(err.statusCode || 400).json({ message: err.message });
   }
 };
 
@@ -22,7 +22,7 @@ const getAllPosts = async (req, res) => {
 
     return res.status(200).json({ post });
   } catch (err) {
-    return res.status(err.statusCode || 500).json({ message: err.message });
+    return res.status(err.statusCode || 400).json({ message: err.message });
   }
 };
 
@@ -38,7 +38,7 @@ const getPostByUserId = async (req, res) => {
 
     return res.status(200).json({ posts });
   } catch (err) {
-    return res.status(err.statusCode || 500).json({ message: err.message });
+    return res.status(err.statusCode || 400).json({ message: err.message });
   }
 };
 
@@ -56,7 +56,7 @@ const updatePost = async (req, res) => {
 
     return res.status(200).json({ post });
   } catch (err) {
-    return res.status(err.statusCode || 500).json({ message: err.message });
+    return res.status(err.statusCode || 400).json({ message: err.message });
   }
 };
 
@@ -72,7 +72,7 @@ const deletePost = async (req, res) => {
 
     return res.status(200).json({ post });
   } catch (err) {
-    return res.status(err.statusCode || 500).json({ message: err.message });
+    return res.status(err.statusCode || 400).json({ message: err.message });
   }
 };
 
