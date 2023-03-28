@@ -1,6 +1,7 @@
 const userDao = require('../models/userDao');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
+const jwt = require('jsonwebtoken');
 
 const signUp = async (name, email, password, profileImage) => {
   // password validation using REGEX
@@ -18,8 +19,8 @@ const signUp = async (name, email, password, profileImage) => {
   const makeHash = async (password, saltRounds) => {
     return await bcrypt.hash(password, saltRounds);
   };
-  const hashPassword = await makeHash(password, saltRounds);
-  const createUser = await userDao.createUser(name, email, hashPassword, profileImage);
+  password = await makeHash(password, saltRounds);
+  const createUser = await userDao.createUser(name, email, password, profileImage);
 
   return createUser;
 };
@@ -29,8 +30,22 @@ const userAllPostView = async (useId) => {
   return userViewService;
 };
 
+const checkPassword = async (email, password) => {
+  const user = await userDao.loginCheckPassword(email);
+  const passwordCheck = await bcrypt.compare(password, user.password);
+  if (passwordCheck == true) {
+    const payLoad = { foo: 'bar' };
+    const secretKey = 'process.env.KEY';
+    const jwtToken = jwt.sign(payLoad, secretKey);
+    return jwtToken;
+  } else {
+    const fail = 'Invalid User';
+    return fail;
+  }
+};
+
 module.exports = {
   signUp,
   userAllPostView,
+  checkPassword,
 };
-

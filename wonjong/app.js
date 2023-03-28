@@ -4,6 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const logger = require('morgan');
+const bcrypt = require('bcrypt');
 
 const routes = require('./routes');
 const app = express();

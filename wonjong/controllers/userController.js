@@ -36,7 +36,26 @@ const userAllPostView = async (req, res) => {
   }
 };
 
+const checkPassword = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'KEY_ERROR' });
+    }
+
+    const result = await userService.checkPassword(email, password);
+    return res.status(200).json({
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(err.statusCode || 500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   signUp,
   userAllPostView,
+  checkPassword,
 };
