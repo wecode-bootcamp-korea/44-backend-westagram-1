@@ -41,7 +41,7 @@ const getPostByUserId = async (userId) => {
     const posts = await appDataSource.query(
       `SELECT 
     users.id AS userId,
-    users.profile_image AS userProfileImage,
+    users.profileImage AS userProfileImage,
     JSON_ARRAYAGG(JSON_OBJECT(
     "postingId",posts.id,
     "postingContent",posts.content
@@ -54,6 +54,7 @@ const getPostByUserId = async (userId) => {
     );
     return posts;
   } catch (err) {
+    console.log(err);
     const error = new Error('INVALID_DATA_USERPOSTS');
     error.statusCode = 400;
     throw error;
@@ -72,7 +73,7 @@ const updatePost = async (userId, postId, content) => {
     const post = await appDataSource.query(
       `SELECT 
     users.id AS userId,
-    users.profile_image AS userProfileImage,
+    users.profileImage AS userProfileImage,
     JSON_ARRAYAGG(JSON_OBJECT(
     "postingId",posts.id,
     "postingContent",posts.content
