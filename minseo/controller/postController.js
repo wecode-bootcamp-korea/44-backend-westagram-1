@@ -4,7 +4,7 @@ const createPost = async (req, res) => {
   try {
     const { title, content } = req.body;
 
-    userId = req.user;
+    const userId = req.user;
 
     if (!userId || !title || !content) {
       return res.status(400).json({ message: 'KEY_ERROR' });
@@ -46,8 +46,8 @@ const getPostByUserId = async (req, res) => {
 
 const updatePost = async (req, res) => {
   try {
-    const { userId, postId } = req.params;
-
+    const { postId } = req.params;
+    const userId = req.user;
     const { content } = req.body;
 
     if (!userId || !postId) {
@@ -64,8 +64,8 @@ const updatePost = async (req, res) => {
 
 const deletePost = async (req, res) => {
   try {
-    const { userId, postId } = req.params;
-
+    const { postId } = req.params;
+    const userId = req.user;
     if (!userId || !postId) {
       return res.status(400).json({ message: 'KEY_ERROR' });
     }

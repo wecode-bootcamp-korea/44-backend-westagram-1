@@ -1,7 +1,7 @@
 const userDao = require('../models/userDao');
 const bcrypt = require('bcrypt');
 const saltRounds = 8;
-
+const jwt = require('jsonwebtoken');
 const signUp = async (name, email, password) => {
   const pwValidation = new RegExp(
     '^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})'
@@ -23,9 +23,21 @@ const signUp = async (name, email, password) => {
   return createUser;
 };
 
-const signIn = async (email) => {
+const signIn = async (email, password) => {
   const user = await userDao.getUserByEmail(email);
-  return user;
+  const match = await bcrypt.compare(password, user.password);
+
+  if (!match) {
+    const err = new Error('NOT_USER');
+    err.statusCode = 409;
+    throw err;
+  }
+
+  const id = user.id;
+  const payLoad = { email: email, id: id };
+  let jwtToken = jwt.sign({ payLoad }, process.env.SECRETKEY);
+
+  return jwtToken;
 };
 
 module.exports = {

@@ -7,8 +7,8 @@ router.post('/post', validateToken, postController.createPost);
 router.get('/posts', postController.getAllPosts);
 router.get('/user/posts/:userId', postController.getPostByUserId);
 
-router.patch('/:userId/:postId', postController.updatePost);
-router.delete('/:userId/:postId', postController.deletePost);
+router.patch('/:postId', validateToken, postController.updatePost);
+router.delete('/:postId', validateToken, postController.deletePost);
 
 module.exports = {
   router,
