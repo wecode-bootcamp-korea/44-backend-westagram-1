@@ -27,8 +27,8 @@ const signIn = async (req, res) => {
       return res.status(400).json({ message: 'NO_YOUR_PROFILE' });
     }
     const payLoad = { email: email };
-    const secretKey = process.env.SECRETKEY;
-    let jwtToken = jwt.sign(payLoad, secretKey);
+
+    let jwtToken = jwt.sign({ payLoad }, process.env.SECRETKEY);
 
     return res.status(200).json({ accessToken: jwtToken });
   } catch (err) {
