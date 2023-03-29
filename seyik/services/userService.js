@@ -22,6 +22,11 @@ const signUp = async (name, email, password, profileImage) => {
   return createUser;
 };
 
+const checkHash = async (password, hashedPassword) => {
+  return await bcrypt.compare(password, hashedPassword);
+};
+
 module.exports = {
   signUp,
+  signIn,
 };
