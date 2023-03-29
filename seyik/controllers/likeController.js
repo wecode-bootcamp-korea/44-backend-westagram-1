@@ -16,7 +16,7 @@ const like = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    return res.status(err.statusCode || 400).json({ message: err.message });
+    return res.status(err.statusCode || 500).json({ message: err.message });
   }
 };
 

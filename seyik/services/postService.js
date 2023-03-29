@@ -3,15 +3,11 @@
 const postDao = require("../models/postDao");
 
 const createPost = async (title, content, userId) => {
-  const createPost = await postDao.createPost(title, content, userId);
-
-  return createPost;
+  return await postDao.createPost(title, content, userId);
 };
 
 const getAllPost = async () => {
-  const AllPost = await postDao.getAllPost();
-
-  return AllPost;
+  return await postDao.getAllPost();
 };
 
 const getUserPost = async (userId) => {
