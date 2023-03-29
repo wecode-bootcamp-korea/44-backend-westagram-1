@@ -13,7 +13,7 @@ app.use(cors());
 app.use(logger('combined'));
 app.use(express.json());
 app.use(routes);
-// app.use의미 : 미들웨어로 등록한다
+
 app.get('/ping', (req, res) => {
   res.json({ message: 'pong' });
 });
