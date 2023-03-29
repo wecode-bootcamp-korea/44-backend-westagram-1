@@ -11,7 +11,6 @@ const createLikes = async (req, res) => {
 
     return res.status(201).json({ message: 'CREATE_LIKES' });
   } catch (err) {
-    console.log(err);
     return res.status(err.statusCode || 500).json({ message: err.message });
   }
 };
