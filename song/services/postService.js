@@ -1,28 +1,23 @@
 const postDao = require("../models/postDao");
 
 const postingList = async () => {
-  const postingLoad = await postDao.postingLoad();
-  return postingLoad;
+  return postDao.postingLoad();
 };
 
 const userPosting = async (userId) => {
-  const userPosting = await postDao.userPosting(userId);
-  return userPosting;
+  return postDao.userPosting(userId);
 };
 
 const createPost = async (title, content, userId) => {
-  const createPosting = await postDao.createPosting(title, content, userId);
-  return createPosting;
+  return postDao.createPosting(title, content, userId);
 };
 
 const modify = async (content, userId) => {
-  const modify = await postDao.modify(content, userId);
-  return modify;
+  return postDao.modify(content, userId);
 };
 
 const remove = async (postId) => {
-  const remove = postDao.remove(postId);
-  return remove;
+  return postDao.remove(postId);
 };
 
 module.exports = {
