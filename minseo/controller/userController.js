@@ -1,4 +1,6 @@
 const userService = require('../service/userService');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const signUp = async (req, res) => {
   try {
@@ -19,13 +21,16 @@ const signUp = async (req, res) => {
 const signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ message: 'KEY_ERROR' });
+    const user = await userService.signIn(email);
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(400).json({ message: 'NO_YOUR_PROFILE' });
     }
-    const Token = await userService.signIn(email, password);
+    const payLoad = { email: email };
+    const secretKey = process.env.SECRETKEY;
+    let jwtToken = jwt.sign(payLoad, secretKey);
 
-    return res.status(200).json({ accessToken: Token });
+    return res.status(200).json({ accessToken: jwtToken });
   } catch (err) {
     console.log(err);
     return res.status(err.statusCode || 400).json({ message: err.message });
