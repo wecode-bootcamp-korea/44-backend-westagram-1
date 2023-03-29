@@ -61,6 +61,7 @@ const loginCheckPassword = async (email) => {
       WHERE email = ?;`,
       [email]
     );
+    console.log(user);
     return user;
   } catch (err) {
     const error = new Error('DO_NOT_GET_DATA');

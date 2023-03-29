@@ -1,6 +1,5 @@
 const userDao = require('../models/userDao');
 const bcrypt = require('bcrypt');
-const saltRounds = 12;
 const jwt = require('jsonwebtoken');
 
 const signUp = async (name, email, password, profileImage) => {
@@ -16,12 +15,12 @@ const signUp = async (name, email, password, profileImage) => {
     err.statusCode = 409;
     throw err;
   }
+  const saltRounds = 12;
   const makeHash = async (password, saltRounds) => {
     return await bcrypt.hash(password, saltRounds);
   };
   password = await makeHash(password, saltRounds);
   const createUser = await userDao.createUser(name, email, password, profileImage);
-
   return createUser;
 };
 
@@ -30,20 +29,20 @@ const userAllPostView = async (useId) => {
   return userViewService;
 };
 
+
 const checkPassword = async (email, password) => {
   const user = await userDao.loginCheckPassword(email);
   const passwordCheck = await bcrypt.compare(password, user.password);
-  if (passwordCheck == true) {
-    const payLoad = { foo: 'bar' };
-    const secretKey = 'process.env.KEY';
-    const jwtToken = jwt.sign(payLoad, secretKey);
-    return jwtToken;
-  } else {
-    const fail = 'Invalid User';
-    return fail;
+  if (passwordCheck) {
+    const payLoad = { email: email, id: user.id };
+    const secretKey = process.env.KEY;
+    const accessToken = jwt.sign(payLoad, secretKey);
+    return accessToken;
   }
+  const err = new Error('NOT_CORRECT');
+  err.statusCode = 401;
+  throw err;
 };
-
 module.exports = {
   signUp,
   userAllPostView,
