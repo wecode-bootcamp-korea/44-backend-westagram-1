@@ -1,9 +1,10 @@
 const userDao = require('../models/userDao');
 const bcrypt = require('bcrypt');
-const saltRounds = 8;
+
 const jwt = require('jsonwebtoken');
 
 const signUp = async (name, email, password) => {
+  const saltRounds = 8;
   const pwValidation = new RegExp(
     '^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})'
   );
