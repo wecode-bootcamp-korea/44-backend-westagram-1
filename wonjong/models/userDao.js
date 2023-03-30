@@ -14,7 +14,6 @@ const createUser = async (name, email, password, profileImage) => {
     );
   } catch (err) {
     const error = new Error('INVALID_DATA_INPUT');
-    console.log(err);
     error.statusCode = 400;
     throw error;
   }
@@ -44,13 +43,12 @@ const userAllPostView = async (userId) => {
     return user;
   } catch (err) {
     const error = new Error('DO_NOT_GET_DATA');
-    console.log(err);
     error.statusCode = 400;
     throw error;
   }
 };
 
-const loginCheckPassword = async (email) => {
+const getUserByEmail = async (email) => {
   try {
     const [user] = await appDataSource.query(
       `SELECT 
@@ -65,7 +63,6 @@ const loginCheckPassword = async (email) => {
     return user;
   } catch (err) {
     const error = new Error('DO_NOT_GET_DATA');
-    console.log(err);
     error.statusCode = 400;
     throw error;
   }
@@ -74,5 +71,5 @@ const loginCheckPassword = async (email) => {
 module.exports = {
   createUser,
   userAllPostView,
-  loginCheckPassword,
+  getUserByEmail,
 };

@@ -30,17 +30,18 @@ const allPostViews = async (req, res) => {
   }
 };
 
-const patchPost = async (req, res) => { 
+const patchPost = async (req, res) => {
   try {
-    const { userId, postId, title, content } = req.body;
+    const { postId } = req.params;
+    const { userId, title, content } = req.body;
 
     if (!userId || !postId || !title || !content) {
       return res.status(400).json({ message: 'KEY_ERROR' });
     }
 
-    await postService.patchPost(userId, postId, title, content);
+    const result = await postService.patchPost(userId, postId, title, content);
     return res.status(200).json({
-      message: 'PATCH_SUCCESS',
+      result,
     });
   } catch (err) {
     console.log(err);
@@ -56,9 +57,9 @@ const deletePost = async (req, res) => {
       return res.status(400).json({ message: 'KEY_ERROR' });
     }
 
-    await postService.deletePost(userId, postId);
+    const result = await postService.deletePost(userId, postId);
     return res.status(200).json({
-      message: 'DELETE_SUCCESS',
+      result,
     });
   } catch (err) {
     console.log(err);

@@ -7,11 +7,10 @@ const validationToken = async (req, res, next) => {
     const decoded = jwt.verify(token, secretKey);
     req.params.userId = decoded.id;
     req.body.userId = decoded.id;
-
     next();
   } catch (err) {
-    res.status(403).json({
-      message: 'TOKEN_KEY_NOT_CORRECT',
+    return res.status(403).json({
+      message: 'INVALID_TOKEN',
     });
   }
 };

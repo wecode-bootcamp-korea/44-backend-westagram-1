@@ -20,31 +20,28 @@ const signUp = async (name, email, password, profileImage) => {
     return await bcrypt.hash(password, saltRounds);
   };
   password = await makeHash(password, saltRounds);
-  const createUser = await userDao.createUser(name, email, password, profileImage);
-  return createUser;
+  return await userDao.createUser(name, email, password, profileImage);
 };
 
 const userAllPostView = async (useId) => {
-  const userViewService = await userDao.userAllPostView(useId);
-  return userViewService;
+  return await userDao.userAllPostView(useId);
 };
 
-
-const checkPassword = async (email, password) => {
-  const user = await userDao.loginCheckPassword(email);
+const singIn = async (email, password) => {
+  const user = await userDao.getUserByEmail(email);
   const passwordCheck = await bcrypt.compare(password, user.password);
-  if (passwordCheck) {
-    const payLoad = { email: email, id: user.id };
-    const secretKey = process.env.KEY;
-    const accessToken = jwt.sign(payLoad, secretKey);
-    return accessToken;
+  if (!passwordCheck) {
+    const err = new Error('NOT_CORRECT');
+    err.statusCode = 401;
+    throw err;
   }
-  const err = new Error('NOT_CORRECT');
-  err.statusCode = 401;
-  throw err;
+  const payLoad = { email: email, id: user.id };
+  const secretKey = process.env.KEY;
+  const accessToken = jwt.sign(payLoad, secretKey);
+  return accessToken;
 };
 module.exports = {
   signUp,
   userAllPostView,
-  checkPassword,
+  singIn,
 };

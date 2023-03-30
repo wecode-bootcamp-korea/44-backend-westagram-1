@@ -1,6 +1,5 @@
 const userService = require('../services/userService');
 
-
 const signUp = async (req, res) => {
   try {
     const { name, email, password, profileImage } = req.body;
@@ -22,7 +21,6 @@ const signUp = async (req, res) => {
 const userAllPostView = async (req, res) => {
   try {
     const { userId } = req.params;
-
     if (!userId) {
       return res.status(400).json({ message: 'KEY_ERROR' });
     }
@@ -37,14 +35,14 @@ const userAllPostView = async (req, res) => {
   }
 };
 
-const checkPassword = async (req, res) => {
+const signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ message: 'KEY_ERROR' });
     }
-    const accessToken = await userService.checkPassword(email, password);
+    const accessToken = await userService.singIn(email, password);
     return res.status(200).json({ accessToken });
   } catch (err) {
     console.log(err);
@@ -55,5 +53,5 @@ const checkPassword = async (req, res) => {
 module.exports = {
   signUp,
   userAllPostView,
-  checkPassword,
+  signIn,
 };
