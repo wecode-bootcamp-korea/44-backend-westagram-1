@@ -31,7 +31,7 @@ const singIn = async (email, password) => {
   const user = await userDao.getUserByEmail(email);
   const passwordCheck = await bcrypt.compare(password, user.password);
   if (!passwordCheck) {
-    const err = new Error('NOT_CORRECT');
+    const err = new Error('PASSWORD_NOT_CORRECT');
     err.statusCode = 401;
     throw err;
   }
