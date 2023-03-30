@@ -28,7 +28,11 @@ const signUp = async (name, email, password) => {
 const signIn = async (email, password) => {
   const user = await userDao.getUserByEmail(email);
   const match = await bcrypt.compare(password, user.password);
-
+  if (email != user.email) {
+    const err = new Error('NOT_YOUR_EMAIL');
+    err.statusCode = 409;
+    throw err;
+  }
   if (!match) {
     const err = new Error('NOT_USER');
     err.statusCode = 409;
@@ -36,7 +40,7 @@ const signIn = async (email, password) => {
   }
 
   const id = user.id;
-  const payLoad = { email: email, id: id };
+  const payLoad = { id: id };
   let jwtToken = jwt.sign({ payLoad }, process.env.SECRETKEY);
 
   return jwtToken;
