@@ -66,6 +66,7 @@ const deletePost = async (req, res) => {
   try {
     const { postId } = req.params;
     const userId = req.user;
+
     if (!userId || !postId) {
       return res.status(400).json({ message: 'KEY_ERROR' });
     }
