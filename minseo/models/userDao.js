@@ -30,7 +30,7 @@ const getUserByEmail = async (email) => {
     );
     return user;
   } catch (err) {
-    const error = new Error('NOT_IN_DB_EMAIL');
+    const error = new Error('INVALID_DATA_OUTPUT');
     error.statusCode = 409;
     throw error;
   }
