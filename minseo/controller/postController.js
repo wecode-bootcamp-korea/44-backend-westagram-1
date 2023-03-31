@@ -2,7 +2,9 @@ const postService = require('../service/postService');
 
 const createPost = async (req, res) => {
   try {
-    const { userId, title, content } = req.body;
+    const { title, content } = req.body;
+
+    const userId = req.user;
 
     if (!userId || !title || !content) {
       return res.status(400).json({ message: 'KEY_ERROR' });
@@ -12,7 +14,7 @@ const createPost = async (req, res) => {
 
     return res.status(201).json({ message: 'createPost_SUCCESS' });
   } catch (err) {
-    return res.status(err.statusCode || 400).json({ message: err.message });
+    return res.status(err.statusCode || 500).json({ message: err.message });
   }
 };
 
@@ -22,7 +24,7 @@ const getAllPosts = async (req, res) => {
 
     return res.status(200).json({ post });
   } catch (err) {
-    return res.status(err.statusCode || 400).json({ message: err.message });
+    return res.status(err.statusCode || 500).json({ message: err.message });
   }
 };
 
@@ -38,14 +40,14 @@ const getPostByUserId = async (req, res) => {
 
     return res.status(200).json({ posts });
   } catch (err) {
-    return res.status(err.statusCode || 400).json({ message: err.message });
+    return res.status(err.statusCode || 500).json({ message: err.message });
   }
 };
 
 const updatePost = async (req, res) => {
   try {
-    const { userId, postId } = req.params;
-
+    const { postId } = req.params;
+    const userId = req.user;
     const { content } = req.body;
 
     if (!userId || !postId) {
@@ -56,13 +58,14 @@ const updatePost = async (req, res) => {
 
     return res.status(200).json({ post });
   } catch (err) {
-    return res.status(err.statusCode || 400).json({ message: err.message });
+    return res.status(err.statusCode || 500).json({ message: err.message });
   }
 };
 
 const deletePost = async (req, res) => {
   try {
-    const { userId, postId } = req.params;
+    const { postId } = req.params;
+    const userId = req.user;
 
     if (!userId || !postId) {
       return res.status(400).json({ message: 'KEY_ERROR' });
@@ -72,7 +75,7 @@ const deletePost = async (req, res) => {
 
     return res.status(200).json({ post });
   } catch (err) {
-    return res.status(err.statusCode || 400).json({ message: err.message });
+    return res.status(err.statusCode || 500).json({ message: err.message });
   }
 };
 
