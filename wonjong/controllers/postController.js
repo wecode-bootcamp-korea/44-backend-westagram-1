@@ -10,7 +10,7 @@ const postUp = async (req, res) => {
 
     await postService.createPost(title, content, userId);
     return res.status(201).json({
-      message: 'SIGNUP_SUCCESS',
+      message: 'POSTUP_SUCCESS',
     });
   } catch (err) {
     console.log(err);
@@ -32,15 +32,16 @@ const allPostViews = async (req, res) => {
 
 const patchPost = async (req, res) => {
   try {
-    const { postId, title, content } = req.body;
+    const { postId } = req.params;
+    const { userId, title, content } = req.body;
 
-    if (!postId || !title || !content) {
+    if (!userId || !postId || !title || !content) {
       return res.status(400).json({ message: 'KEY_ERROR' });
     }
 
-    await postService.patchPost(postId, title, content);
+    const result = await postService.patchPost(userId, postId, title, content);
     return res.status(200).json({
-      message: 'PATCH_SUCCESS',
+      result,
     });
   } catch (err) {
     console.log(err);
@@ -50,15 +51,15 @@ const patchPost = async (req, res) => {
 
 const deletePost = async (req, res) => {
   try {
-    const { postId } = req.params;
+    const { userId, postId } = req.params;
 
-    if (!postId) {
+    if (!userId || !postId) {
       return res.status(400).json({ message: 'KEY_ERROR' });
     }
 
-    await postService.deletePost(postId);
+    const result = await postService.deletePost(userId, postId);
     return res.status(200).json({
-      message: 'DELETE_SUCCESS',
+      result,
     });
   } catch (err) {
     console.log(err);

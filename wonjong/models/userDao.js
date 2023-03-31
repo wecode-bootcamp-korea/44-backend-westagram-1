@@ -14,7 +14,6 @@ const createUser = async (name, email, password, profileImage) => {
     );
   } catch (err) {
     const error = new Error('INVALID_DATA_INPUT');
-    console.log(err);
     error.statusCode = 400;
     throw error;
   }
@@ -22,7 +21,7 @@ const createUser = async (name, email, password, profileImage) => {
 
 const userAllPostView = async (userId) => {
   try {
-    return await appDataSource.query(
+    const user = await appDataSource.query(
       `SELECT
       u.id as userId,
       u.profile_image as userProfileImage,
@@ -39,8 +38,28 @@ const userAllPostView = async (userId) => {
         JOIN users u ON p.user_id = u.id
         WHERE p.user_id = ?
         GROUP BY p.user_id;`,
-      { userId }
+      [userId]
     );
+    return user;
+  } catch (err) {
+    const error = new Error('DO_NOT_GET_DATA');
+    error.statusCode = 400;
+    throw error;
+  }
+};
+
+const getUserByEmail = async (email) => {
+  try {
+    const [user] = await appDataSource.query(
+      `SELECT 
+      id,
+      email,
+      password
+      FROM users 
+      WHERE email = ?;`,
+      [email]
+    );
+    return user;
   } catch (err) {
     const error = new Error('DO_NOT_GET_DATA');
     error.statusCode = 400;
@@ -51,4 +70,5 @@ const userAllPostView = async (userId) => {
 module.exports = {
   createUser,
   userAllPostView,
+  getUserByEmail,
 };

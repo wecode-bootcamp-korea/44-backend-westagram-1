@@ -36,14 +36,14 @@ const allPostViews = async () => {
   }
 };
 
-const patchPost = async (postId, title, content) => {
+const patchPost = async (userId, postId, title, content) => {
   try {
     return await appDataSource.query(
       `UPDATE posts
       SET title = ?,
       content = ?
-      WHERE  posts.id = ?;`,
-      [title, content, postId]
+      WHERE posts.user_id = ? and   posts.id = ?;`,
+      [title, content, userId, postId]
     );
   } catch (err) {
     const error = new Error('DO_NOT_UPDATE_DATA');
@@ -52,12 +52,13 @@ const patchPost = async (postId, title, content) => {
   }
 };
 
-const deletePost = async (postId) => {
+const deletePost = async (userId, postId) => {
   try {
     return await appDataSource.query(
       `DELETE FROM posts
-      WHERE posts.id = ?;`,
-      [postId]
+      WHERE posts.user_id =? 
+      AND posts.id = ?;`,
+      [userId, postId]
     );
   } catch (err) {
     const error = new Error('DO_NOT_UPDATE_DATA');
